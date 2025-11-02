@@ -1,63 +1,104 @@
 <?php
 require __DIR__ . '/povezava.php';
 
-$sql = "
-SELECT 
-  z.id_zdravnik,
-  u.ime, u.priimek,
-  z.mesto,
-  COALESCE(p.avg_ocena, 0) AS avg_ocena,
-  COALESCE(p.st_ocen, 0) AS st_ocen,
-  GROUP_CONCAT(DISTINCT s.naziv ORDER BY s.naziv SEPARATOR ', ') AS specializacije
-FROM zdravnik z
-JOIN uporabnik u ON u.id_uporabnik = z.TK_uporabnik
-LEFT JOIN specializacija_zdravnik sz ON sz.TK_zdravnik = z.id_zdravnik
-LEFT JOIN specializacija s ON s.id_specializacija = sz.TK_specializacija
-LEFT JOIN (
-    SELECT TK_zdravnik,
-           ROUND(AVG(ocena), 2) AS avg_ocena,
-           COUNT(*) AS st_ocen
-    FROM ocene
-    GROUP BY TK_zdravnik
-) p ON p.TK_zdravnik = z.id_zdravnik
-GROUP BY z.id_zdravnik, u.ime, u.priimek, z.mesto, p.avg_ocena, p.st_ocen
-ORDER BY avg_ocena DESC, st_ocen DESC, u.priimek, u.ime
-";
+echo "<h1>Izpis vseh podatkov iz baze</h1>";
 
-$res = $conn->query($sql);
-
-if (!$res) {
-    die("Napaka pri branju podatkov: " . $conn->error);
+/*uporabniki*/
+echo "<h2>Tabela: uporabnik</h2>";
+$rezultat = $conn->query("SELECT * FROM uporabnik");
+if ($rezultat && $rezultat->num_rows > 0) { //ali ma vsaj 1 vrstico
+    echo "<table border='1' cellpadding='5'><tr>
+            <th>id_uporabnik</th><th>email</th><th>geslo</th>
+            <th>ime</th><th>priimek</th><th>vloga</th></tr>";
+    while ($row = $rezultat->fetch_assoc()) { //dokler so vrstice
+        echo "<tr>
+                <td>{$row['id_uporabnik']}</td>
+                <td>{$row['email']}</td>
+                <td>{$row['geslo']}</td>
+                <td>{$row['ime']}</td>
+                <td>{$row['priimek']}</td>
+                <td>{$row['vloga']}</td>
+              </tr>";
+    }
+    echo "</table>";
+} else {
+    echo "<p>Ni uporabnikov.</p>";
 }
 
-$rows = $res->fetch_all(MYSQLI_ASSOC);
-$res->free();
+/*zdravniki*/
+echo "<h2>Tabela: zdravnik</h2>";
+$rezultat = $conn->query("SELECT * FROM zdravnik");
+if ($rezultat && $rezultat->num_rows > 0) {
+    echo "<table border='1' cellpadding='5'><tr>
+            <th>id_zdravnik</th><th>TK_uporabnik</th><th>naziv</th>
+            <th>telefon</th><th>spletnaStran</th><th>klinika</th>
+            <th>mesto</th><th>postaSt</th><th>country</th>
+          </tr>";
+    while ($row = $rezultat->fetch_assoc()) {
+        echo "<tr>
+                <td>{$row['id_zdravnik']}</td>
+                <td>{$row['TK_uporabnik']}</td>
+                <td>{$row['naziv']}</td>
+                <td>{$row['telefon']}</td>
+                <td>{$row['spletnaStran']}</td>
+                <td>{$row['klinika']}</td>
+                <td>{$row['mesto']}</td>
+                <td>{$row['postaSt']}</td>
+                <td>{$row['country']}</td>
+              </tr>";
+    }
+    echo "</table>";
+} else {
+    echo "<p>Ni zdravnikov.</p>";
+}
+
+/*specializacija*/
+echo "<h2>Tabela: specializacija</h2>";
+$rezultat = $conn->query("SELECT * FROM specializacija");
+if ($rezultat && $rezultat->num_rows > 0) {
+    echo "<table border='1' cellpadding='5'><tr><th>id_specializacija</th><th>naziv</th></tr>";
+    while ($row = $rezultat->fetch_assoc()) {
+        echo "<tr><td>{$row['id_specializacija']}</td><td>{$row['naziv']}</td></tr>";
+    }
+    echo "</table>";
+} else {
+    echo "<p>Ni specializacij.</p>";
+}
+
+/*specializacija_zdravnik*/
+echo "<h2>Tabela: specializacija_zdravnik</h2>";
+$rezultat = $conn->query("SELECT * FROM specializacija_zdravnik");
+if ($rezultat && $rezultat->num_rows > 0) {
+    echo "<table border='1' cellpadding='5'><tr><th>TK_specializacija</th><th>TK_zdravnik</th></tr>";
+    while ($row = $rezultat->fetch_assoc()) {
+        echo "<tr><td>{$row['TK_specializacija']}</td><td>{$row['TK_zdravnik']}</td></tr>";
+    }
+    echo "</table>";
+} else {
+    echo "<p>Ni povezav zdravnik-specializacija.</p>";
+}
+
+/*ocene*/
+echo "<h2>Tabela: ocene</h2>";
+$rezultat = $conn->query("SELECT * FROM ocene");
+if ($rezultat && $rezultat->num_rows > 0) {
+    echo "<table border='1' cellpadding='5'><tr>
+            <th>id_ocene</th><th>ocena</th><th>komentar</th>
+            <th>TK_uporabnik</th><th>TK_zdravnik</th>
+          </tr>";
+    while ($row = $rezultat->fetch_assoc()) {
+        echo "<tr>
+                <td>{$row['id_ocene']}</td>
+                <td>{$row['ocena']}</td>
+                <td>{$row['komentar']}</td>
+                <td>{$row['TK_uporabnik']}</td>
+                <td>{$row['TK_zdravnik']}</td>
+              </tr>";
+    }
+    echo "</table>";
+} else {
+    echo "<p>Ni ocen.</p>";
+}
+
 $conn->close();
 ?>
-
-<!DOCTYPE html>
-<html lang="sl">
-<head>
-    <meta charset="UTF-8">
-    <title>Spletni imenik zdravnikov</title>
-</head>
-<body>
-
-<h1>Seznam zdravnikov</h1>
-
-<?php if (empty($rows)): ?>
-    <p>Ni podatkov.</p>
-<?php else: ?>
-    <?php foreach ($rows as $r): ?>
-        <div>
-            <p><b><?= htmlspecialchars($r['ime'] . ' ' . $r['priimek']) ?></b></p>
-            <p>Mesto: <?= htmlspecialchars($r['mesto'] ?? '-') ?></p>
-            <p>Specializacije: <?= htmlspecialchars($r['specializacije'] ?? '-') ?></p>
-            <p>Povprečna ocena: <?= (float)$r['avg_ocena'] ?> (<?= (int)$r['st_ocen'] ?> ocen)</p>
-            <hr>
-        </div>
-    <?php endforeach; ?>
-<?php endif; ?>
-
-</body>
-</html>
