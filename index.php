@@ -7,9 +7,9 @@ $sql = "
     d.id_zdravnik,
     u.ime,
     u.priimek,
-    COALESCE(GROUP_CONCAT(s.naziv ORDER BY s.naziv SEPARATOR ', '), '') AS specializacije,
-    ROUND(AVG(o.ocena), 1)  AS povprecje_ocen,     -- npr. 4.5
-    COUNT(o.ocena)          AS st_ocen             -- npr. 12
+    GROUP_CONCAT(DISTINCT s.naziv ORDER BY s.naziv SEPARATOR ', ') AS specializacije,
+    ROUND(AVG(o.ocena), 1)  AS povprecje_ocen,
+    COUNT(o.ocena) AS st_ocen
   FROM zdravnik d
   JOIN uporabnik u ON u.id_uporabnik = d.TK_uporabnik
   LEFT JOIN ocene o ON o.TK_zdravnik = d.id_zdravnik
@@ -19,11 +19,16 @@ $sql = "
   ORDER BY u.priimek, u.ime
 ";
 
-
-$result = $conn->query($sql); $doctors = []; if ($result) { $doctors =
-$result->fetch_all(MYSQLI_ASSOC); } function doctorImage(int $id): string {
-$path = "img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ? $path :
-"img/doctor-placeholder.jpg"; } ?>
+$specSql = "
+    SELECT id_specializacija, naziv 
+    FROM specializacija
+    ORDER BY naziv
+";
+$specRezultat = $conn->query($specSql); $specializacija = $specRezultat ?
+$specRezultat->fetch_all(MYSQLI_ASSOC) : []; $rezultat = $conn->query($sql);
+$zdravniki = []; if ($rezultat) { $zdravniki = $rezultat->fetch_all(MYSQLI_ASSOC); }
+function doctorImage(int $id): string { $path = "img/doctors/$id.jpg"; return
+file_exists(__DIR__ . "/$path") ? $path : "img/doctor-placeholder.jpg"; } ?>
 <!DOCTYPE html>
 <html lang="sl">
   <head>
@@ -63,19 +68,35 @@ $path = "img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ? $path :
     </section>
 
     <main class="py-5">
-      <div class="doktori">
+      <div class="doctors">
+        <div class="doctor-filters">
+          <button class="filter-btn active" data-filter="all">Vsi</button>
+
+          <?php foreach ($specializacija as $s): ?>
+          <button
+            class="filter-btn"
+            data-filter="<?= htmlspecialchars($s['naziv']) ?>"
+          >
+            <?= htmlspecialchars($s['naziv']) ?>
+          </button>
+          <?php endforeach; ?>
+        </div>
+
         <div
           class="row g-4 row-cols-1 row-cols-sm-2 row-cols-lg-4 justify-content-center"
         >
-          <?php if (!$doctors): ?>
+          <?php if (!$zdravniki): ?>
           <div class="col">
             <div class="alert alert-warning">Ni zdravnikov v bazi.</div>
           </div>
           <?php endif; ?>
 
-          <?php foreach ($doctors as $d): ?>
+          <?php foreach ($zdravniki as $d): ?>
           <div class="col">
-            <article class="doctor-card h-100 mx-auto">
+            <article
+              class="doctor-card h-100 mx-auto"
+              data-specializacija="<?= htmlspecialchars($d['specializacije']) ?>"
+            >
               <?php if ($d['povprecje_ocen'] !== null): ?>
               <div
                 class="rating-badge"
@@ -145,4 +166,30 @@ $path = "img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ? $path :
       </div>
     </main>
   </body>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const buttons = document.querySelectorAll(".filter-btn");
+      const cards = document.querySelectorAll(".doctor-card");
+
+      buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          buttons.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          const filter = btn.dataset.filter;
+
+          cards.forEach((card) => {
+            const spec = card.dataset.specializacija;
+
+            if (filter === "all" || spec.includes(filter)) {
+              card.parentElement.style.display = "";
+            } else {
+              card.parentElement.style.display = "none";
+            }
+          });
+        });
+      });
+    });
+  </script>
 </html>

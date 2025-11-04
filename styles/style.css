@@ -95,7 +95,7 @@ body {
 }
 
 /* SEZNAM DOKTOROV */
-.doktori {
+.doctors {
   justify-content: center;
   gap: 30px;
   padding: 40px 0;
@@ -254,4 +254,33 @@ body {
 
 .rating-badge .score{
   letter-spacing: .3px;
+}
+
+/*filtri*/
+.doctor-filters{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-bottom:32px;
+}
+
+.filter-btn{
+  padding:10px 18px;
+  border-radius:999px;
+  background:#f5f6fb;
+  border:1px solid #eceff4;
+  color:#0d1634;
+  cursor:pointer;
+  font-weight:500;
+  transition:.2s;
+}
+
+.filter-btn:hover{
+  background:#e6e8f0;
+}
+
+.filter-btn.active{
+  background:#0d1634;
+  color:#fff;
 }
