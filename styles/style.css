@@ -1,0 +1,229 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar {
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar .logo h2 {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.navbar ul {
+  display: flex;
+  list-style: none;
+  gap: 25px;
+}
+
+.navbar ul li a {
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.btn {
+  background: #0d1634;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.hero {
+  width: 100%;
+  height: 320px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.hero-overlay {
+  width: 100%;
+  height: 100%;
+  background: rgba(25, 40, 85, 0.6);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-overlay h1 {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.hero-overlay p {
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+.logo img {
+  height: 70px;
+  width: auto;
+}
+
+:root {
+  --line: #eceff4;
+  --soft: #f5f6fb;
+  --ink: #0d1634;
+  --muted: #6b7280;
+}
+
+/* SEZNAM DOKTOROV */
+.doktori {
+  justify-content: center;
+  gap: 30px;
+  padding: 40px 0;
+}
+
+.doktori .row {
+  justify-content: center;
+}
+
+.doctor-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 10px 28px rgba(17, 24, 39, 0.1);
+  overflow: hidden;
+  transition: transform 0.18s, box-shadow 0.18s;
+  max-width: 360px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.doctor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(17, 24, 39, 0.14);
+}
+
+.doctor-photo {
+  background: var(--soft);
+  display: grid;
+  place-items: center;
+  min-height: 350px;
+  padding: 16px;
+  flex: 1 1 auto;
+}
+
+.doctor-photo img {
+  max-height: 360px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.08));
+}
+
+.doctor-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.doctor-name {
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+
+.doctor-role {
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+/* Uiverse.io - boryanakrasteva */
+.see-more-btn {
+  width: 140px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: none;
+  position: relative;
+  background-color: transparent;
+  transition: 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+  opacity: 0.6;
+  cursor: pointer;
+  font-weight: 600;
+  color: #0d1634;
+  margin-top: auto;
+}
+
+.see-more-btn::after {
+  content: "";
+  border-bottom: 3px double #00a2de;
+  width: 0;
+  height: 100%;
+  position: absolute;
+  margin-top: -5px;
+  top: 0;
+  left: 5px;
+  visibility: hidden;
+  opacity: 1;
+  transition: 0.2s linear;
+}
+
+.see-more-btn .icon {
+  transform: translateX(0%);
+  transition: 0.2s linear;
+  animation: attention 1.2s linear infinite;
+  color: #0d1634;
+}
+
+.see-more-btn:hover::after {
+  visibility: visible;
+  opacity: 0.7;
+  width: 90%;
+}
+
+.see-more-btn:hover {
+  letter-spacing: 2px;
+  opacity: 1;
+}
+
+.see-more-btn:hover > .icon {
+  transform: translateX(30%);
+  animation: none;
+}
+
+@keyframes attention {
+  0% {
+    transform: translateX(0%);
+  }
+
+  50% {
+    transform: translateX(30%);
+  }
+}
