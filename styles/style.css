@@ -116,6 +116,7 @@ body {
   width: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .doctor-card:hover {
@@ -226,4 +227,31 @@ body {
   50% {
     transform: translateX(30%);
   }
+}
+
+/*zvezdica*/
+.rating-badge{
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 14px rgba(17,24,39,.08);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #0d1634;
+}
+
+
+.rating-badge .star{
+  color: #ff8a00;
+}
+
+.rating-badge .score{
+  letter-spacing: .3px;
 }
