@@ -3,20 +3,21 @@ require __DIR__ . '/povezava.php';
 
 // Preberi zdravnike
 $sql = "
-  SELECT
-    d.id_zdravnik,
-    u.ime,
-    u.priimek,
-    GROUP_CONCAT(DISTINCT s.naziv ORDER BY s.naziv SEPARATOR ', ') AS specializacije,
-    ROUND(AVG(o.ocena), 1)  AS povprecje_ocen,
-    COUNT(o.ocena) AS st_ocen
-  FROM zdravnik d
-  JOIN uporabnik u ON u.id_uporabnik = d.TK_uporabnik
-  LEFT JOIN ocene o ON o.TK_zdravnik = d.id_zdravnik
-  LEFT JOIN specializacija_zdravnik sz ON sz.TK_zdravnik = d.id_zdravnik
-  LEFT JOIN specializacija s ON s.id_specializacija = sz.TK_specializacija
-  GROUP BY d.id_zdravnik, u.ime, u.priimek
-  ORDER BY u.priimek, u.ime
+SELECT
+  d.id_zdravnik,
+  u.ime,
+  u.priimek,
+  GROUP_CONCAT(DISTINCT s.naziv ORDER BY s.naziv SEPARATOR ', ') AS specializacije,
+  ROUND(AVG(o.ocena), 1)  AS povprecje_ocen,
+  COUNT(o.ocena) AS st_ocen,
+  d.slika_url
+FROM zdravnik d
+JOIN uporabnik u ON u.id_uporabnik = d.TK_uporabnik
+LEFT JOIN ocene o ON o.TK_zdravnik = d.id_zdravnik
+LEFT JOIN specializacija_zdravnik sz ON sz.TK_zdravnik = d.id_zdravnik
+LEFT JOIN specializacija s ON s.id_specializacija = sz.TK_specializacija
+GROUP BY d.id_zdravnik, u.ime, u.priimek, d.slika_url
+ORDER BY u.priimek, u.ime;
 ";
 
 $specSql = "
@@ -26,9 +27,11 @@ $specSql = "
 ";
 $specRezultat = $conn->query($specSql); $specializacija = $specRezultat ?
 $specRezultat->fetch_all(MYSQLI_ASSOC) : []; $rezultat = $conn->query($sql);
-$zdravniki = []; if ($rezultat) { $zdravniki = $rezultat->fetch_all(MYSQLI_ASSOC); }
-function doctorImage(int $id): string { $path = "img/doctors/$id.jpg"; return
-file_exists(__DIR__ . "/$path") ? $path : "img/doctor-placeholder.jpg"; } ?>
+$zdravniki = []; if ($rezultat) { $zdravniki =
+$rezultat->fetch_all(MYSQLI_ASSOC); } function doctorImage(?string $dbUrl, int
+$id): string { if (!empty($dbUrl)) return $dbUrl; // vrni, kar je v bazi $path =
+"img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ? $path :
+"img/doctor-placeholder.jpg"; } ?>
 <!DOCTYPE html>
 <html lang="sl">
   <head>
@@ -51,9 +54,10 @@ file_exists(__DIR__ . "/$path") ? $path : "img/doctor-placeholder.jpg"; } ?>
         <nav>
           <ul>
             <li><a href="#">Domov</a></li>
-            <li><a href="#">Povezava</a></li>
-            <li><a href="#">Povezava</a></li>
-            <li><a href="#">Povezava</a></li>
+            <li><a href="#">O nas</a></li>
+            <li><a href="#">Storitve</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Kontakt</a></li>
           </ul>
         </nav>
         <a href="#" class="btn">Prijava</a>
@@ -124,7 +128,7 @@ file_exists(__DIR__ . "/$path") ? $path : "img/doctor-placeholder.jpg"; } ?>
 
               <div class="doctor-photo">
                 <img
-                  src="<?= htmlspecialchars(doctorImage((int)$d['id_zdravnik'])) ?>"
+                  src="<?= htmlspecialchars(doctorImage($d['slika_url'] ?? null, (int)$d['id_zdravnik'])) ?>"
                   alt="<?= htmlspecialchars($d['ime'].' '.$d['priimek']) ?>"
                 />
               </div>
