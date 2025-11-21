@@ -292,3 +292,15 @@ body::before {
   transform: translateX(-2px);
 }
 
+.panel-right {
+  position: relative;
+}
+
+.panel-right.panel-fade {
+  animation: panelFade 700ms cubic-bezier(.4,0,.2,1);
+}
+
+@keyframes panelFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
