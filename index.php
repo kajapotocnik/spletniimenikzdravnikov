@@ -68,7 +68,7 @@ function doctorImage(
             <li><a href="#">Kontakt</a></li>
           </ul>
         </nav>
-        <a href="#" class="btn">Prijava</a>
+        <a href="prijava.php" class="btn">Prijava</a>
       </div>
     </header>
 
