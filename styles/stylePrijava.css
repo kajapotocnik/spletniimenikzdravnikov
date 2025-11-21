@@ -254,26 +254,20 @@ body::before {
   top: 24px;
   left: 24px;
   z-index: 9999;
-
   display: inline-flex;
   align-items: center;
   gap: 8px;
-
   padding: 10px 18px;
   border-radius: 14px;
-
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-
   color: #0d9488;
   font-size: 13px;
   font-weight: 500;
   text-decoration: none;
-
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   border: 1px solid rgba(13,148,136,0.2);
-
   transition: all 0.25s ease;
 }
 

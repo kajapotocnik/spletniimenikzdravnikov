@@ -19,11 +19,18 @@ GROUP BY d.id_zdravnik, u.ime, u.priimek, d.slika_url
 ORDER BY u.priimek, u.ime
 ";
 
-$rezultat = $conn->query($sql); $zdravniki = $rezultat ?
-$rezultat->fetch_all(MYSQLI_ASSOC) : []; function doctorImage(?string $dbUrl,
-int $id): string { if (!empty($dbUrl)) return $dbUrl; $path =
-"img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ? $path :
-"img/doctor-placeholder.jpg"; } ?>
+$specSql = "
+  SELECT id_specializacija, naziv
+  FROM specializacija
+  ORDER BY naziv
+";
+
+$specRezultat = $conn->query($specSql); $specializacije = $specRezultat ?
+$specRezultat->fetch_all(MYSQLI_ASSOC) : []; $rezultat = $conn->query($sql);
+$zdravniki = $rezultat ? $rezultat->fetch_all(MYSQLI_ASSOC) : []; function
+doctorImage(?string $dbUrl, int $id): string { if (!empty($dbUrl)) return
+$dbUrl; $path = "img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ?
+$path : "img/doctor-placeholder.jpg"; } ?>
 
 <!DOCTYPE html>
 <html lang="sl">
@@ -321,6 +328,19 @@ int $id): string { if (!empty($dbUrl)) return $dbUrl; $path =
       <h2>Naši zdravniki</h2>
     </section>
 
+    <div class="doctor-filters">
+      <button class="filter-btn active" data-filter="all">Vsi</button>
+
+      <?php foreach ($specializacije as $s): ?>
+      <button
+        class="filter-btn"
+        data-filter="<?= htmlspecialchars($s['naziv']) ?>"
+      >
+        <?= htmlspecialchars($s['naziv']) ?>
+      </button>
+      <?php endforeach; ?>
+    </div>
+
     <section class="home-doctors">
       <div class="container">
         <div class="home-doctors-grid">
@@ -329,7 +349,10 @@ int $id): string { if (!empty($dbUrl)) return $dbUrl; $path =
           <?php endif; ?>
 
           <?php foreach ($zdravniki as $d): ?>
-          <article class="doctor-card">
+          <article
+            class="doctor-card"
+            data-specializacija="<?= htmlspecialchars($d['specializacije']) ?>"
+          >
             <?php if ($d['povprecje_ocen'] !== null): ?>
             <div
               class="rating-badge"
@@ -376,4 +399,30 @@ int $id): string { if (!empty($dbUrl)) return $dbUrl; $path =
       </div>
     </footer>
   </body>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const buttons = document.querySelectorAll(".filter-btn");
+      const cards = document.querySelectorAll(".doctor-card");
+
+      buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          buttons.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          const filter = btn.dataset.filter;
+
+          cards.forEach((card) => {
+            const spec = card.dataset.specializacija || "";
+
+            if (filter === "all" || spec.includes(filter)) {
+              card.style.display = "block";
+            } else {
+              card.style.display = "none";
+            }
+          });
+        });
+      });
+    });
+  </script>
 </html>
