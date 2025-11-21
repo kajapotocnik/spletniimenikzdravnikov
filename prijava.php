@@ -8,6 +8,25 @@
 </head>
 <body>
 
+<header class="navbar">
+    <div class="container">
+        <div class="logo">
+          <img src="img/logo.png" alt="Logo" />
+        </div>
+        <nav>
+          <ul>
+              <li><a href="index.php">Domov</a></li>
+              <li><a href="#">Poišči zdravnika</a></li>
+              <li><a href="#">Specialnosti</a></li>
+              <li><a href="#">Mesta / regije</a></li>
+              <li><a href="#">Zdravstvene ustanove</a></li>
+              <li><a href="#">Kontakt</a></li>
+          </ul>
+        </nav>
+        <a href="prijava.php" class="btn">Prijava</a>
+      </div>
+</header>
+
 <div class="auth-wrapper">
     <div class="panel panel-left">
 

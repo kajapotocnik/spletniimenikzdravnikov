@@ -61,11 +61,12 @@ function doctorImage(
         </div>
         <nav>
           <ul>
-            <li><a href="#">Domov</a></li>
-            <li><a href="#">O nas</a></li>
-            <li><a href="#">Storitve</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Kontakt</a></li>
+              <li><a href="index.php">Domov</a></li>
+              <li><a href="#">Poišči zdravnika</a></li>
+              <li><a href="#">Specialnosti</a></li>
+              <li><a href="#">Mesta / regije</a></li>
+              <li><a href="#">Zdravstvene ustanove</a></li>
+              <li><a href="#">Kontakt</a></li>
           </ul>
         </nav>
         <a href="prijava.php" class="btn">Prijava</a>
