@@ -488,7 +488,8 @@ footer .container {
 }
 
 .home-doctors-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   justify-content: center;
   align-items: stretch;
   gap: 40px;
@@ -621,4 +622,3 @@ footer .container {
       0 0 0 6px rgba(25, 180, 154, 0.15);
   }
 }
-

@@ -25,12 +25,14 @@ $specSql = "
   ORDER BY naziv
 ";
 
-$specRezultat = $conn->query($specSql); $specializacije = $specRezultat ?
-$specRezultat->fetch_all(MYSQLI_ASSOC) : []; $rezultat = $conn->query($sql);
-$zdravniki = $rezultat ? $rezultat->fetch_all(MYSQLI_ASSOC) : []; function
-doctorImage(?string $dbUrl, int $id): string { if (!empty($dbUrl)) return
-$dbUrl; $path = "img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ?
-$path : "img/doctor-placeholder.jpg"; } ?>
+$specRezultat = $conn->query($specSql);
+$specializacije = $specRezultat ? $specRezultat->fetch_all(MYSQLI_ASSOC) : [];
+
+$rezultat = $conn->query($sql); $zdravniki = $rezultat ?
+$rezultat->fetch_all(MYSQLI_ASSOC) : []; function doctorImage(?string $dbUrl,
+int $id): string { if (!empty($dbUrl)) return $dbUrl; $path =
+"img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ? $path :
+"img/doctor-placeholder.jpg"; } ?>
 
 <!DOCTYPE html>
 <html lang="sl">
@@ -218,7 +220,7 @@ $path : "img/doctor-placeholder.jpg"; } ?>
               />
             </svg>
           </div>
-          Laboratorij
+          Oftalmologija
         </div>
 
         <div class="service-item">
@@ -263,7 +265,7 @@ $path : "img/doctor-placeholder.jpg"; } ?>
               </g>
             </svg>
           </div>
-          Rentgen &amp; MRI
+          Ginekologija
         </div>
 
         <div class="service-item">
@@ -329,17 +331,17 @@ $path : "img/doctor-placeholder.jpg"; } ?>
     </section>
 
     <div class="doctor-filters">
-      <button class="filter-btn active" data-filter="all">Vsi</button>
+  <button class="filter-btn active" data-filter="all">Vsi</button>
 
-      <?php foreach ($specializacije as $s): ?>
-      <button
-        class="filter-btn"
-        data-filter="<?= htmlspecialchars($s['naziv']) ?>"
-      >
-        <?= htmlspecialchars($s['naziv']) ?>
-      </button>
-      <?php endforeach; ?>
-    </div>
+  <?php foreach ($specializacije as $s): ?>
+    <button 
+      class="filter-btn" 
+      data-filter="<?= htmlspecialchars($s['naziv']) ?>">
+      <?= htmlspecialchars($s['naziv']) ?>
+    </button>
+  <?php endforeach; ?>
+</div>
+
 
     <section class="home-doctors">
       <div class="container">
@@ -349,10 +351,7 @@ $path : "img/doctor-placeholder.jpg"; } ?>
           <?php endif; ?>
 
           <?php foreach ($zdravniki as $d): ?>
-          <article
-            class="doctor-card"
-            data-specializacija="<?= htmlspecialchars($d['specializacije']) ?>"
-          >
+          <article class="doctor-card" data-specializacija="<?= htmlspecialchars($d['specializacije']) ?>">
             <?php if ($d['povprecje_ocen'] !== null): ?>
             <div
               class="rating-badge"
@@ -401,28 +400,29 @@ $path : "img/doctor-placeholder.jpg"; } ?>
   </body>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const buttons = document.querySelectorAll(".filter-btn");
-      const cards = document.querySelectorAll(".doctor-card");
+document.addEventListener("DOMContentLoaded", () => {
+  const buttons = document.querySelectorAll(".filter-btn");
+  const cards = document.querySelectorAll(".doctor-card");
 
-      buttons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          buttons.forEach((b) => b.classList.remove("active"));
-          btn.classList.add("active");
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      buttons.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
 
-          const filter = btn.dataset.filter;
+      const filter = btn.dataset.filter;
 
-          cards.forEach((card) => {
-            const spec = card.dataset.specializacija || "";
+      cards.forEach((card) => {
+        const spec = card.dataset.specializacija || "";
 
-            if (filter === "all" || spec.includes(filter)) {
-              card.style.display = "block";
-            } else {
-              card.style.display = "none";
-            }
-          });
-        });
+        if (filter === "all" || spec.includes(filter)) {
+          card.style.display = "block";
+        } else {
+          card.style.display = "none";
+        }
       });
     });
-  </script>
+  });
+});
+</script>
+
 </html>
