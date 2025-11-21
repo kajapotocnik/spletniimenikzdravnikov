@@ -9,25 +9,24 @@
 <body>
 
 <header class="navbar">
-    <div class="container">
-        <div class="logo">
-            <img src="img/logo.png" alt="Spletni imenik zdravnikov">
-        </div>
-
-        <nav>
-            <ul>
-                <li><a href="#">Domov</a></li>
-                <li><a href="#">Poišči zdravnika</a></li>
-                <li><a href="#">Specialnosti</a></li>
-                <li><a href="#">Mesta / regije</a></li>
-                <li><a href="#">Zdravstvene ustanove</a></li>
-                <li><a href="#">Kontakt</a></li>
-            </ul>
-        </nav>
-
-        <a href="prijava.php" class="btn-primary-nav">Prijava</a>
+  <div class="container">
+    <div class="logo">
+      <img src="img/logo1.png" alt="Logo" />
     </div>
+    <nav>
+      <ul>
+        <li><a href="index.php" class="nav-link active">Domov</a></li>
+        <li><a href="#" class="nav-link">Poišči zdravnika</a></li>
+        <li><a href="#" class="nav-link">Specialnosti</a></li>
+        <li><a href="#" class="nav-link">Mesta</a></li>
+        <li><a href="#" class="nav-link">Zdravstvene ustanove</a></li>
+        <li><a href="#" class="nav-link">Kontakt</a></li>
+      </ul>
+    </nav>
+    <a href="prijava.php" class="btn-nav">Prijava</a>
+  </div>
 </header>
+
 
 <section class="hero">
     <div class="hero-content">

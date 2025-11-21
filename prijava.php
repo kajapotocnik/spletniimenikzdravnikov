@@ -4,28 +4,20 @@
     <meta charset="UTF-8">
     <title>Prijava / Registracija</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles/stylePrijava.css?v=5" />
+    <link rel="stylesheet" href="styles/stylePrijava.css?v=6" />
 </head>
 <body>
 
-<header class="navbar">
-    <div class="container">
-        <div class="logo">
-          <img src="img/logo.png" alt="Logo" />
-        </div>
-        <nav>
-          <ul>
-              <li><a href="index.php">Domov</a></li>
-              <li><a href="#">Poišči zdravnika</a></li>
-              <li><a href="#">Specialnosti</a></li>
-              <li><a href="#">Mesta / regije</a></li>
-              <li><a href="#">Zdravstvene ustanove</a></li>
-              <li><a href="#">Kontakt</a></li>
-          </ul>
-        </nav>
-        <a href="prijava.php" class="btn">Prijava</a>
-      </div>
-</header>
+<a href="index.php" class="back-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" 
+       viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
+       stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="15 18 9 12 15 6"></polyline>
+  </svg>
+  Nazaj domov
+</a>
+
+
 
 <div class="auth-wrapper">
     <div class="panel panel-left">
