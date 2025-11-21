@@ -26,12 +26,20 @@ $specSql = "
     ORDER BY naziv
 ";
 $specRezultat = $conn->query($specSql); $specializacija = $specRezultat ?
-$specRezultat->fetch_all(MYSQLI_ASSOC) : []; $rezultat = $conn->query($sql);
-$zdravniki = []; if ($rezultat) { $zdravniki =
-$rezultat->fetch_all(MYSQLI_ASSOC); } function doctorImage(?string $dbUrl, int
-$id): string { if (!empty($dbUrl)) return $dbUrl; // vrni, kar je v bazi $path =
-"img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ? $path :
-"img/doctor-placeholder.jpg"; } ?>
+$specRezultat->fetch_all(MYSQLI_ASSOC) : []; 
+$rezultat = $conn->query($sql);
+$zdravniki = []; 
+if ($rezultat) { 
+  $zdravniki =$rezultat->fetch_all(MYSQLI_ASSOC); 
+} 
+
+
+function doctorImage(
+  ?string $dbUrl, int$id): string { if (!empty($dbUrl)) return $dbUrl; // vrni, kar je v bazi $path =
+  "img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ? $path :
+  "img/doctor-placeholder.jpg"; } 
+?>
+
 <!DOCTYPE html>
 <html lang="sl">
   <head>
@@ -86,9 +94,9 @@ $id): string { if (!empty($dbUrl)) return $dbUrl; // vrni, kar je v bazi $path =
           <?php endforeach; ?>
         </div>
 
-        <div
-          class="row g-4 row-cols-1 row-cols-sm-2 row-cols-lg-4 justify-content-center"
-        >
+        <div class="row g-4 row-cols-1 row-cols-md-3">
+
+
           <?php if (!$zdravniki): ?>
           <div class="col">
             <div class="alert alert-warning">Ni zdravnikov v bazi.</div>

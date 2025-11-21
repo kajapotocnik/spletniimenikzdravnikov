@@ -1,4 +1,9 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+ 
+
 $streznik = "localhost:3306";
 $uporabnik = "root";
 $geslo = "sladoled";
