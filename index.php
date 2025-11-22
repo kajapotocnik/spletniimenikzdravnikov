@@ -25,21 +25,42 @@ $specSql = "
   ORDER BY naziv
 ";
 
-$specRezultat = $conn->query($specSql); $specializacije = $specRezultat ?
-$specRezultat->fetch_all(MYSQLI_ASSOC) : []; $rezultat = $conn->query($sql);
-$zdravniki = $rezultat ? $rezultat->fetch_all(MYSQLI_ASSOC) : []; function
-doctorImage(?string $dbUrl, int $id): string { if (!empty($dbUrl)) return
-$dbUrl; $path = "img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ?
-$path : "img/doctor-placeholder.jpg"; } // top 3 specializacije po številu
-zdravnikov $specSql = " SELECT s.id_specializacija, s.naziv, COUNT(DISTINCT
-sz.TK_zdravnik) AS st_zdravnikov FROM specializacija s LEFT JOIN
-specializacija_zdravnik sz ON sz.TK_specializacija = s.id_specializacija GROUP
-BY s.id_specializacija, s.naziv ORDER BY st_zdravnikov DESC, s.naziv ASC LIMIT 3
-"; $specRes = $conn->query($specSql); $topSpecs = []; if ($specRes) { while
-($row = $specRes->fetch_assoc()) { $topSpecs[] = $row; } } // koliko je vseh
-zdravnikov (za procent) $totalDocs = 0; $totalRes = $conn->query("SELECT
-COUNT(*) AS total FROM zdravnik"); if ($totalRes && $totalRes->num_rows) {
-$totalDocs = (int)$totalRes->fetch_assoc()['total']; } ?>
+$specRezultat = $conn->query($specSql); 
+$specializacije = $specRezultat ?
+$specRezultat->fetch_all(MYSQLI_ASSOC) : []; 
+$rezultat = $conn->query($sql);
+
+$zdravniki = $rezultat ? $rezultat->fetch_all(MYSQLI_ASSOC) : []; 
+function doctorImage(?string $dbUrl, int $id): string { 
+  if (!empty($dbUrl)) return
+  $dbUrl; $path = "img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ?
+  $path : "img/doctor-placeholder.jpg"; 
+} 
+
+// top 3 specializacije po številu zdravnikov 
+
+$specSql = 
+  " SELECT s.id_specializacija, s.naziv, 
+  COUNT(DISTINCT sz.TK_zdravnik) AS st_zdravnikov 
+  FROM specializacija s 
+  LEFT JOIN specializacija_zdravnik sz ON sz.TK_specializacija = s.id_specializacija 
+  GROUP BY s.id_specializacija, s.naziv 
+  ORDER BY st_zdravnikov DESC, s.naziv ASC LIMIT 3
+  "; 
+
+$specRes = $conn->query($specSql); $topSpecs = []; 
+if ($specRes) { 
+  while($row = $specRes->fetch_assoc()) 
+    { $topSpecs[] = $row; } 
+} 
+
+// koliko je vseh zdravnikov (za procent) $totalDocs = 0; 
+$totalRes = $conn->query("SELECT COUNT(*) AS total FROM zdravnik"); 
+if ($totalRes && $totalRes->num_rows) {
+  $totalDocs = (int)$totalRes->fetch_assoc()['total']; 
+} 
+
+?>
 
 <!DOCTYPE html>
 <html lang="sl">
