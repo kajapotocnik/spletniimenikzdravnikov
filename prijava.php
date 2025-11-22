@@ -33,6 +33,8 @@
     <div class="panel panel-right">
         <h2 id="formTitle">Ustvari račun</h2>
 
+        
+
         <!-- REGISTRACIJA -->
         <form id="registerForm" action="register_process.php" method="post">
             <div class="form-group">
@@ -46,6 +48,13 @@
             </div>
             <div class="form-group">
                 <input type="password" class="form-input" name="password" placeholder="Geslo" required>
+            </div>
+
+            <div class="form-group role-check">
+                <label class="role-label">
+                    <input type="checkbox" name="je_zdravnik" value="1">
+                    <span>Želim imeti vlogo zdravnika</span>
+                </label>
             </div>
 
             <button type="submit" class="btn-primary">Registracija</button>
@@ -64,6 +73,7 @@
         </form>
     </div>
 </div>
+
 
 
 </body>
