@@ -30,7 +30,16 @@ $specRezultat->fetch_all(MYSQLI_ASSOC) : []; $rezultat = $conn->query($sql);
 $zdravniki = $rezultat ? $rezultat->fetch_all(MYSQLI_ASSOC) : []; function
 doctorImage(?string $dbUrl, int $id): string { if (!empty($dbUrl)) return
 $dbUrl; $path = "img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ?
-$path : "img/doctor-placeholder.jpg"; } ?>
+$path : "img/doctor-placeholder.jpg"; } // top 3 specializacije po številu
+zdravnikov $specSql = " SELECT s.id_specializacija, s.naziv, COUNT(DISTINCT
+sz.TK_zdravnik) AS st_zdravnikov FROM specializacija s LEFT JOIN
+specializacija_zdravnik sz ON sz.TK_specializacija = s.id_specializacija GROUP
+BY s.id_specializacija, s.naziv ORDER BY st_zdravnikov DESC, s.naziv ASC LIMIT 3
+"; $specRes = $conn->query($specSql); $topSpecs = []; if ($specRes) { while
+($row = $specRes->fetch_assoc()) { $topSpecs[] = $row; } } // koliko je vseh
+zdravnikov (za procent) $totalDocs = 0; $totalRes = $conn->query("SELECT
+COUNT(*) AS total FROM zdravnik"); if ($totalRes && $totalRes->num_rows) {
+$totalDocs = (int)$totalRes->fetch_assoc()['total']; } ?>
 
 <!DOCTYPE html>
 <html lang="sl">
@@ -285,24 +294,22 @@ $path : "img/doctor-placeholder.jpg"; } ?>
       <div>
         <div class="stats-right-title">Naše specializacije</div>
         <div class="stats-circles">
-          <div class="stat-circle" style="--value: 85">
+          <?php if (!empty($topSpecs) && $totalDocs >
+          0): ?>
+          <?php foreach ($topSpecs as $spec): ?>
+          <?php
+          $percent = (int) round(($spec['st_zdravnikov'] / $totalDocs) * 100);
+        ?>
+          <div class="stat-circle" style="--value: <?= $percent ?>">
             <div class="stat-inner">
-              <div class="percent">85%</div>
-              <div class="label">Nevrokirurgija</div>
+              <div class="percent"><?= $percent ?>%</div>
+              <div class="label"><?= htmlspecialchars($spec['naziv']) ?></div>
             </div>
           </div>
-          <div class="stat-circle" style="--value: 68">
-            <div class="stat-inner">
-              <div class="percent">68%</div>
-              <div class="label">MRI diagnostika</div>
-            </div>
-          </div>
-          <div class="stat-circle" style="--value: 79">
-            <div class="stat-inner">
-              <div class="percent">79%</div>
-              <div class="label">Kardiologija</div>
-            </div>
-          </div>
+          <?php endforeach; ?>
+          <?php else: ?>
+          <p>Za prikaz statistike trenutno ni dovolj podatkov.</p>
+          <?php endif; ?>
         </div>
       </div>
     </section>
