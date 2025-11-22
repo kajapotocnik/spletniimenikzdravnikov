@@ -25,14 +25,12 @@ $specSql = "
   ORDER BY naziv
 ";
 
-$specRezultat = $conn->query($specSql);
-$specializacije = $specRezultat ? $specRezultat->fetch_all(MYSQLI_ASSOC) : [];
-
-$rezultat = $conn->query($sql); $zdravniki = $rezultat ?
-$rezultat->fetch_all(MYSQLI_ASSOC) : []; function doctorImage(?string $dbUrl,
-int $id): string { if (!empty($dbUrl)) return $dbUrl; $path =
-"img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ? $path :
-"img/doctor-placeholder.jpg"; } ?>
+$specRezultat = $conn->query($specSql); $specializacije = $specRezultat ?
+$specRezultat->fetch_all(MYSQLI_ASSOC) : []; $rezultat = $conn->query($sql);
+$zdravniki = $rezultat ? $rezultat->fetch_all(MYSQLI_ASSOC) : []; function
+doctorImage(?string $dbUrl, int $id): string { if (!empty($dbUrl)) return
+$dbUrl; $path = "img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ?
+$path : "img/doctor-placeholder.jpg"; } ?>
 
 <!DOCTYPE html>
 <html lang="sl">
@@ -211,12 +209,12 @@ int $id): string { if (!empty($dbUrl)) return $dbUrl; $path =
           <div class="service-icon">
             <svg
               class="service-svg"
-              viewBox="0 -8 72 72"
+              viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 fill="currentColor"
-                d="M47.71,24.61a15.61,15.61,0,0,0,2.44.19,11.08,11.08,0,0,0,8-3.11l1.19-1.19a2,2,0,1,0-2.88-2.88l-.29.29L46.09,7.82l.29-.28A2,2,0,0,0,43.5,4.66L42.31,5.85a11,11,0,0,0-3.11,8,16.59,16.59,0,0,0,2.14,8,12.82,12.82,0,0,1,1.62,6,7.73,7.73,0,0,1-1.12,4.14L32,22.16a6.54,6.54,0,0,1,2.1-.88l7.8,7.8a7.12,7.12,0,0,0,.09-1.17,10.69,10.69,0,0,0-.36-2.71l-4.07-4.07a12.88,12.88,0,0,1,2.61.63,18.21,18.21,0,0,1-1.6-4.6A15.61,15.61,0,0,0,36.08,17,10.65,10.65,0,0,0,25,28.08a16.59,16.59,0,0,0,2.14,8,12.82,12.82,0,0,1,1.62,6,7.73,7.73,0,0,1-1.12,4.14l-9.89-9.89a6.59,6.59,0,0,1,2.11-.88l7.79,7.79a6.93,6.93,0,0,0,.09-1.16,10.69,10.69,0,0,0-.36-2.71l-4.06-4.06a12.92,12.92,0,0,1,2.6.62,18.24,18.24,0,0,1-1.61-4.6,15.4,15.4,0,0,0-2.43-.19,11,11,0,0,0-8,3.11L12.66,35.5a2,2,0,0,0,2.88,2.88l.29-.29L25.91,48.17l-.29.29a2,2,0,1,0,2.88,2.88l1.19-1.19a11,11,0,0,0,3.11-8,16.59,16.59,0,0,0-2.14-8,12.82,12.82,0,0,1-1.62-6A7.73,7.73,0,0,1,30.16,24l9.89,9.89a6.54,6.54,0,0,1-2.1.88l-7.8-7.8a7.12,7.12,0,0,0-.09,1.17,10.56,10.56,0,0,0,.36,2.7l4.07,4.08a13.58,13.58,0,0,1-2.61-.63,18.21,18.21,0,0,1,1.6,4.6,15.61,15.61,0,0,0,2.44.19A10.65,10.65,0,0,0,47,27.92a16.59,16.59,0,0,0-2.14-8,12.82,12.82,0,0,1-1.62-6,7.73,7.73,0,0,1,1.12-4.14l9.89,9.89a6.82,6.82,0,0,1-2.11.88l-7.8-7.8a8.31,8.31,0,0,0-.08,1.17,10.69,10.69,0,0,0,.36,2.71l4.06,4.06a12.16,12.16,0,0,1-2.6-.63A18.28,18.28,0,0,1,47.71,24.61Z"
+                d="M3,10C2.76,10 2.55,10.09 2.41,10.25C2.27,10.4 2.21,10.62 2.24,10.86L2.74,13.85C2.82,14.5 3.4,15 4,15H7C7.64,15 8.36,14.44 8.5,13.82L9.56,10.63C9.6,10.5 9.57,10.31 9.5,10.19C9.39,10.07 9.22,10 9,10H3M7,17H4C2.38,17 0.96,15.74 0.76,14.14L0.26,11.15C0.15,10.3 0.39,9.5 0.91,8.92C1.43,8.34 2.19,8 3,8H9C9.83,8 10.58,8.35 11.06,8.96C11.17,9.11 11.27,9.27 11.35,9.45C11.78,9.36 12.22,9.36 12.64,9.45C12.72,9.27 12.82,9.11 12.94,8.96C13.41,8.35 14.16,8 15,8H21C21.81,8 22.57,8.34 23.09,8.92C23.6,9.5 23.84,10.3 23.74,11.11L23.23,14.18C23.04,15.74 21.61,17 20,17H17C15.44,17 13.92,15.81 13.54,14.3L12.64,11.59C12.26,11.31 11.73,11.31 11.35,11.59L10.43,14.37C10.07,15.82 8.56,17 7,17M15,10C14.78,10 14.61,10.07 14.5,10.19C14.42,10.31 14.4,10.5 14.45,10.7L15.46,13.75C15.64,14.44 16.36,15 17,15H20C20.59,15 21.18,14.5 21.25,13.89L21.76,10.82C21.79,10.62 21.73,10.4 21.59,10.25C21.45,10.09 21.24,10 21,10H15Z"
               />
             </svg>
           </div>
@@ -227,42 +225,25 @@ int $id): string { if (!empty($dbUrl)) return $dbUrl; $path =
           <div class="service-icon">
             <svg
               class="service-svg"
-              viewBox="0 0 24 24"
+              viewBox="0 0 16 16"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <style>
-                .cls-1 {
-                  fill: none;
-                  stroke: currentColor;
-                  stroke-miterlimit: 10;
-                  stroke-width: 1.91px;
-                }
-              </style>
-              <g id="MRI">
-                <path
-                  class="cls-1"
-                  d="M15.82,16.8a6.66,6.66,0,0,0,6-3.82,6.57,6.57,0,0,0,.65-2.87,6.68,6.68,0,0,0-13.36,0A6.57,6.57,0,0,0,9.79,13"
-                />
-                <path
-                  class="cls-1"
-                  d="M13.6,13A6.57,6.57,0,0,1,13,10.11a6.68,6.68,0,0,1,4.78-6.4"
-                />
-                <path
-                  class="cls-1"
-                  d="M21.85,13H3.41A1.9,1.9,0,0,0,1.5,14.89V16.8H15.82"
-                />
-                <line
-                  class="cls-1"
-                  x1="3.41"
-                  y1="21.57"
-                  x2="3.41"
-                  y2="16.8"
-                ></line>
-                <polyline
-                  class="cls-1"
-                  points="9.14 16.8 9.14 20.61 22.5 20.61 22.5 10.11"
-                ></polyline>
-              </g>
+              <path
+                fill="currentColor"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M8 0C6.89543 0 6 0.895431 6 2V2.0359L5.96891 2.01795C5.01233 1.46566 3.78915 1.79341 3.23686 2.75C2.68458 3.70659 3.01233 4.92977 3.96891 5.48205L4 5.5L3.96891 5.51795C3.01233 6.07023 2.68458 7.29342 3.23686 8.25C3.78915 9.20658 5.01233 9.53434 5.96891 8.98205L6 8.9641V9C6 10.1046 6.89543 11 8 11C9.10457 11 10 10.1046 10 9V8.9641L10.0311 8.98205C10.9877 9.53434 12.2109 9.20658 12.7631 8.25C13.3154 7.29342 12.9877 6.07023 12.0311 5.51795L12 5.5L12.0311 5.48205C12.9877 4.92977 13.3154 3.70659 12.7631 2.75C12.2109 1.79341 10.9877 1.46566 10.0311 2.01795L10 2.0359V2C10 0.895431 9.10457 0 8 0ZM7.99995 7C8.82838 7 9.49995 6.32843 9.49995 5.5C9.49995 4.67157 8.82838 4 7.99995 4C7.17152 4 6.49995 4.67157 6.49995 5.5C6.49995 6.32843 7.17152 7 7.99995 7Z"
+              />
+
+              <path
+                fill="currentColor"
+                d="M7 16H6C3.23858 16 1 13.7614 1 11V10H2C4.76142 10 7 12.2386 7 15V16Z"
+              />
+
+              <path
+                fill="currentColor"
+                d="M10 16H9V15C9 12.2386 11.2386 10 14 10H15V11C15 13.7614 12.7614 16 10 16Z"
+              />
             </svg>
           </div>
           Ginekologija
@@ -331,17 +312,17 @@ int $id): string { if (!empty($dbUrl)) return $dbUrl; $path =
     </section>
 
     <div class="doctor-filters">
-  <button class="filter-btn active" data-filter="all">Vsi</button>
+      <button class="filter-btn active" data-filter="all">Vsi</button>
 
-  <?php foreach ($specializacije as $s): ?>
-    <button 
-      class="filter-btn" 
-      data-filter="<?= htmlspecialchars($s['naziv']) ?>">
-      <?= htmlspecialchars($s['naziv']) ?>
-    </button>
-  <?php endforeach; ?>
-</div>
-
+      <?php foreach ($specializacije as $s): ?>
+      <button
+        class="filter-btn"
+        data-filter="<?= htmlspecialchars($s['naziv']) ?>"
+      >
+        <?= htmlspecialchars($s['naziv']) ?>
+      </button>
+      <?php endforeach; ?>
+    </div>
 
     <section class="home-doctors">
       <div class="container">
@@ -351,7 +332,10 @@ int $id): string { if (!empty($dbUrl)) return $dbUrl; $path =
           <?php endif; ?>
 
           <?php foreach ($zdravniki as $d): ?>
-          <article class="doctor-card" data-specializacija="<?= htmlspecialchars($d['specializacije']) ?>">
+          <article
+            class="doctor-card"
+            data-specializacija="<?= htmlspecialchars($d['specializacije']) ?>"
+          >
             <?php if ($d['povprecje_ocen'] !== null): ?>
             <div
               class="rating-badge"
@@ -400,29 +384,28 @@ int $id): string { if (!empty($dbUrl)) return $dbUrl; $path =
   </body>
 
   <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const buttons = document.querySelectorAll(".filter-btn");
-  const cards = document.querySelectorAll(".doctor-card");
+    document.addEventListener("DOMContentLoaded", () => {
+      const buttons = document.querySelectorAll(".filter-btn");
+      const cards = document.querySelectorAll(".doctor-card");
 
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      buttons.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
+      buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          buttons.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
 
-      const filter = btn.dataset.filter;
+          const filter = btn.dataset.filter;
 
-      cards.forEach((card) => {
-        const spec = card.dataset.specializacija || "";
+          cards.forEach((card) => {
+            const spec = card.dataset.specializacija || "";
 
-        if (filter === "all" || spec.includes(filter)) {
-          card.style.display = "block";
-        } else {
-          card.style.display = "none";
-        }
+            if (filter === "all" || spec.includes(filter)) {
+              card.style.display = "block";
+            } else {
+              card.style.display = "none";
+            }
+          });
+        });
       });
     });
-  });
-});
-</script>
-
+  </script>
 </html>
