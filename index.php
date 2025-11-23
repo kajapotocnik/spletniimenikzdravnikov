@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/povezava.php';
 
+// prebere zdravnike
 $sql = "
 SELECT
   d.id_zdravnik,
@@ -19,6 +20,7 @@ GROUP BY d.id_zdravnik, u.ime, u.priimek, d.slika_url
 ORDER BY u.priimek, u.ime
 ";
 
+// za specializacije
 $specSql = "
   SELECT id_specializacija, naziv
   FROM specializacija
@@ -26,11 +28,17 @@ $specSql = "
 ";
 
 $specRezultat = $conn->query($specSql); 
+
+// če ne rezultat ne obstaja se pretvori v prazno polje
 $specializacije = $specRezultat ?
 $specRezultat->fetch_all(MYSQLI_ASSOC) : []; 
+
 $rezultat = $conn->query($sql);
 
+//vsi zdravniki se pretvorijo v polje
 $zdravniki = $rezultat ? $rezultat->fetch_all(MYSQLI_ASSOC) : []; 
+
+// za sliko
 function doctorImage(?string $dbUrl, int $id): string { 
   if (!empty($dbUrl)) return
   $dbUrl; $path = "img/doctors/$id.jpg"; return file_exists(__DIR__ . "/$path") ?
@@ -38,7 +46,6 @@ function doctorImage(?string $dbUrl, int $id): string {
 } 
 
 // top 3 specializacije po številu zdravnikov 
-
 $specSql = 
   " SELECT s.id_specializacija, s.naziv, 
   COUNT(DISTINCT sz.TK_zdravnik) AS st_zdravnikov 
@@ -48,18 +55,37 @@ $specSql =
   ORDER BY st_zdravnikov DESC, s.naziv ASC LIMIT 3
   "; 
 
-$specRes = $conn->query($specSql); $topSpecs = []; 
+$specRes = $conn->query($specSql); 
+$topSpecs = []; 
+
 if ($specRes) { 
   while($row = $specRes->fetch_assoc()) 
     { $topSpecs[] = $row; } 
 } 
 
-// koliko je vseh zdravnikov (za procent) $totalDocs = 0; 
+// za graf
+$totalZdr = 0; 
 $totalRes = $conn->query("SELECT COUNT(*) AS total FROM zdravnik"); 
 if ($totalRes && $totalRes->num_rows) {
-  $totalDocs = (int)$totalRes->fetch_assoc()['total']; 
+  $totalZdr = (int)$totalRes->fetch_assoc()['total']; 
 } 
 
+// PRIJAVA - podatki
+$isLoggedIn = isset($_SESSION['user_id']);
+$userIme = $_SESSION['user_ime'] ?? '';
+$userPriimek = $_SESSION['user_priimek'] ?? '';
+$userFullName = trim($userIme . ' ' . $userPriimek);
+
+$userVloga = $_SESSION['user_vloga'] ?? null;
+$isDoctor = $isLoggedIn && $userVloga === 'ZDRAVNIK'; // samo zdravniki
+
+// če ni imena
+$initials = 'U';
+if ($userIme !== '' || $userPriimek !== '') {
+    $first = mb_substr($userIme, 0, 1, 'UTF-8');
+    $last  = mb_substr($userPriimek, 0, 1, 'UTF-8');
+    $initials = mb_strtoupper($first . $last, 'UTF-8');
+}
 ?>
 
 <!DOCTYPE html>
@@ -89,7 +115,31 @@ if ($totalRes && $totalRes->num_rows) {
             <li><a href="#" class="nav-link">Kontakt</a></li>
           </ul>
         </nav>
-        <a href="prijava.php" class="btn-nav">Prijava</a>
+        
+        <?php if (!$isLoggedIn): ?>
+          <a href="prijava.php" class="btn-nav">Prijava</a>
+        <?php else: ?>
+          <div class="user-menu">
+            <button class="user-menu-trigger" type="button">
+              <span class="user-avatar"><?= htmlspecialchars($initials) ?></span>
+              <span class="user-name"><?= htmlspecialchars($userFullName) ?></span>
+              <span class="user-chevron">
+                <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </button>
+
+            <div class="user-dropdown">
+              <?php if ($isDoctor): ?>
+                <a href="profil.php" class="user-dropdown-item">Moj profil</a>
+              <?php endif; ?>
+
+              <a href="logout.php" class="user-dropdown-item">Odjava</a>
+            </div>
+          </div>
+        <?php endif; ?>
       </div>
     </header>
 
@@ -315,12 +365,10 @@ if ($totalRes && $totalRes->num_rows) {
       <div>
         <div class="stats-right-title">Naše specializacije</div>
         <div class="stats-circles">
-          <?php if (!empty($topSpecs) && $totalDocs >
-          0): ?>
-          <?php foreach ($topSpecs as $spec): ?>
-          <?php
-          $percent = (int) round(($spec['st_zdravnikov'] / $totalDocs) * 100);
-        ?>
+          <?php if (!empty($topSpecs) && $totalZdr > 0): // vsaj ena spec. 
+            foreach ($topSpecs as $spec):
+            $percent = (int) round(($spec['st_zdravnikov'] / $totalZdr) * 100); // izračun %
+          ?>
           <div class="stat-circle" style="--value: <?= $percent ?>">
             <div class="stat-inner">
               <div class="percent"><?= $percent ?>%</div>
@@ -342,12 +390,9 @@ if ($totalRes && $totalRes->num_rows) {
     <div class="doctor-filters">
       <button class="filter-btn active" data-filter="all">Vsi</button>
 
-      <?php foreach ($specializacije as $s): ?>
-      <button
-        class="filter-btn"
-        data-filter="<?= htmlspecialchars($s['naziv']) ?>"
-      >
-        <?= htmlspecialchars($s['naziv']) ?>
+      <?php foreach ($specializacije as $s): // vse spec. ?>
+      <button class="filter-btn" data-filter="<?= htmlspecialchars($s['naziv']) ?>">
+        <?= htmlspecialchars($s['naziv']) // izpis spec. ?>
       </button>
       <?php endforeach; ?>
     </div>
@@ -359,15 +404,14 @@ if ($totalRes && $totalRes->num_rows) {
           <p>Trenutno ni zdravnikov v bazi.</p>
           <?php endif; ?>
 
-          <?php foreach ($zdravniki as $d): ?>
-          <article
-            class="doctor-card"
-            data-specializacija="<?= htmlspecialchars($d['specializacije']) ?>"
-          >
-            <?php if ($d['povprecje_ocen'] !== null): ?>
-            <div
-              class="rating-badge"
-              title="<?= htmlspecialchars(number_format((float)$d['povprecje_ocen'], 1, ',', '') . ' (' . (int)$d['st_ocen'] . ' ocen)') ?>"
+          <?php foreach ($zdravniki as $d): // vsi zdravniki ?>
+          <article class="doctor-card" data-specializacija="<?= htmlspecialchars($d['specializacije']) // kartica enega zdravnika ?>">
+            <?php if ($d['povprecje_ocen'] !== null): // če ima izračunano povr. oceno ?>
+            <div class="rating-badge" 
+              title="<?= htmlspecialchars(
+                number_format((float)$d['povprecje_ocen'], 1, ',', '') . 
+                ' (' . (int)$d['st_ocen'] . ' ocen)'
+              ) ?>"
             >
               <span class="rating-star">★</span>
               <span class="rating-score">
@@ -413,17 +457,17 @@ if ($totalRes && $totalRes->num_rows) {
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const buttons = document.querySelectorAll(".filter-btn");
-      const cards = document.querySelectorAll(".doctor-card");
+      const gumbFilter = document.querySelectorAll(".filter-btn");
+      const kartica = document.querySelectorAll(".doctor-card"); 
 
-      buttons.forEach((btn) => {
+      gumbFilter.forEach((btn) => {
         btn.addEventListener("click", () => {
-          buttons.forEach((b) => b.classList.remove("active"));
+          gumbFilter.forEach((b) => b.classList.remove("active"));
           btn.classList.add("active");
 
           const filter = btn.dataset.filter;
 
-          cards.forEach((card) => {
+          kartica.forEach((card) => {
             const spec = card.dataset.specializacija || "";
 
             if (filter === "all" || spec.includes(filter)) {
