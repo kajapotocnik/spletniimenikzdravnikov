@@ -28,6 +28,8 @@ if (!function_exists('doctorImage')) {
 }
 
 
+// da  ma zdravnik zapis v tabeli zdravnik
+$doctorId = null;
 $check = $conn->prepare("SELECT id_zdravnik FROM zdravnik WHERE TK_uporabnik = ? LIMIT 1");
 $check->bind_param('i', $viewUserId);
 $check->execute();
@@ -35,13 +37,39 @@ $res = $check->get_result();
 $docRow = $res->fetch_assoc();
 $check->close();
 
+if ($docRow) {
+    $doctorId = (int)$docRow['id_zdravnik'];
+}
+
 if (!$docRow && $currentRole === 'ZDRAVNIK' && $currentUserId === $viewUserId) {
-    // prazen zapis
+    // ustvarimo prazen zapis
     $insEmpty = $conn->prepare("INSERT INTO zdravnik (TK_uporabnik) VALUES (?)");
     $insEmpty->bind_param('i', $viewUserId);
     $insEmpty->execute();
+    $doctorId = (int)$insEmpty->insert_id;
     $insEmpty->close();
 }
+
+// preberi specializacije
+$allSpecs = [];
+$specRes = $conn->query("SELECT id_specializacija, naziv FROM specializacija ORDER BY naziv");
+if ($specRes) {
+    $allSpecs = $specRes->fetch_all(MYSQLI_ASSOC);
+}
+
+// preberi specializacijo od zdravnika
+$selectedSpecs = [];
+if ($doctorId) {
+    $sel = $conn->prepare("SELECT TK_specializacija FROM specializacija_zdravnik WHERE TK_zdravnik = ?");
+    $sel->bind_param('i', $doctorId);
+    $sel->execute();
+    $selRes = $sel->get_result();
+    while ($row = $selRes->fetch_assoc()) {
+        $selectedSpecs[] = (int)$row['TK_specializacija'];
+    }
+    $sel->close();
+}
+
 
 if ($canEdit && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $naziv       = trim($_POST['naziv']       ?? '');
@@ -63,7 +91,6 @@ if ($canEdit && $_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE TK_uporabnik = ?
     ");
 
-    // string, double, int
     $stmt->bind_param(
         'ssssssssdddi',
         $naziv,
@@ -83,9 +110,37 @@ if ($canEdit && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $stmt->close();
 
+    // posodobi
+    if ($doctorId) {
+        // zbriši stare
+        $del = $conn->prepare("DELETE FROM specializacija_zdravnik WHERE TK_zdravnik = ?");
+        $del->bind_param('i', $doctorId);
+        $del->execute();
+        $del->close();
+
+        // dodaj nove
+        if (!empty($_POST['specializacije']) && is_array($_POST['specializacije'])) {
+            $insSpec = $conn->prepare("
+                INSERT INTO specializacija_zdravnik (TK_specializacija, TK_zdravnik) VALUES (?, ?)
+            ");
+
+            foreach ($_POST['specializacije'] as $specId) {
+                $specId = (int)$specId;
+                if ($specId > 0) {
+                    $insSpec->bind_param('ii', $specId, $doctorId);
+                    $insSpec->execute();
+                }
+            }
+
+            $insSpec->close();
+        }
+    }
+
+
     header('Location: profil_zdravnik.php');
     exit;
 }
+
 
 // branje podatkov
 $stmt = $conn->prepare("
@@ -373,6 +428,28 @@ if ($userIme !== '' || $userPriimek !== '') {
                                 <?= $canEdit ? '' : 'readonly' ?>
                             >
                         </div>
+                        
+                        <?php if (!empty($allSpecs)): ?>
+                            <h3 class="profile-subtitle">Specializacije</h3>
+                            <div class="profile-group">
+                                <div class="spec-list">
+                                    <?php foreach ($allSpecs as $s): 
+                                        $checked = in_array((int)$s['id_specializacija'], $selectedSpecs, true);
+                                    ?>
+                                        <label class="spec-pill">
+                                            <input
+                                                type="checkbox"
+                                                name="specializacije[]"
+                                                value="<?= (int)$s['id_specializacija'] ?>"
+                                                <?= $checked ? 'checked' : '' ?>
+                                                <?= $canEdit ? '' : 'disabled' ?>
+                                            >
+                                            <span><?= htmlspecialchars($s['naziv']) ?></span>
+                                        </label>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <?php if ($canEdit): ?>
