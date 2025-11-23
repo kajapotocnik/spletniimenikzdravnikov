@@ -300,17 +300,11 @@ if ($userIme !== '' || $userPriimek !== '') {
                     >
                 </div>
 
-                <h1 class="doctor-profile-name">
-                    <?= htmlspecialchars($doc['ime'] . ' ' . $doc['priimek']) ?>
-                </h1>
+                    <h1 class="doctor-profile-name">
+                        <?= htmlspecialchars(trim(($doc['naziv'] ?? '') . ' ' . $doc['ime'] . ' ' . $doc['priimek'])) ?>
+                    </h1>
 
-                <p class="doctor-profile-role">Zdravnik</p>
-
-                <?php if (!empty($doc['naziv'])): ?>
-                    <p class="doctor-profile-title">
-                        <?= htmlspecialchars($doc['naziv']) ?>
-                    </p>
-                <?php endif; ?>
+                    <p class="doctor-profile-role">Zdravnik</p>
 
                 <div class="doctor-contact">
                     <p><strong>Email:</strong> <?= htmlspecialchars($doc['email']) ?></p>
