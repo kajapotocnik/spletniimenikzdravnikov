@@ -70,6 +70,18 @@ if ($doctorId) {
     $sel->close();
 }
 
+// imena specializacij
+$doctorSpecs = [];
+
+if (!empty($allSpecs) && !empty($selectedSpecs)) {
+    foreach ($allSpecs as $s) {
+        if (in_array((int)$s['id_specializacija'], $selectedSpecs, true)) {
+            $doctorSpecs[] = $s['naziv'];
+        }
+    }
+}
+
+
 
 if ($canEdit && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $naziv       = trim($_POST['naziv']       ?? '');
@@ -304,7 +316,15 @@ if ($userIme !== '' || $userPriimek !== '') {
                         <?= htmlspecialchars(trim(($doc['naziv'] ?? '') . ' ' . $doc['ime'] . ' ' . $doc['priimek'])) ?>
                     </h1>
 
-                    <p class="doctor-profile-role">Zdravnik</p>
+                    <?php if (!empty($doctorSpecs)): ?>
+                        <div class="doctor-specialities">
+                            <?php foreach ($doctorSpecs as $spec): ?>
+                                <span class="speciality-pill">
+                                    <?= htmlspecialchars($spec) ?>
+                                </span>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
 
                 <div class="doctor-contact">
                     <p><strong>Email:</strong> <?= htmlspecialchars($doc['email']) ?></p>
