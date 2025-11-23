@@ -133,7 +133,7 @@ if ($userIme !== '' || $userPriimek !== '') {
 
             <div class="user-dropdown">
               <?php if ($isDoctor): ?>
-                <a href="profil.php" class="user-dropdown-item">Moj profil</a>
+                <a href="profil_zdravnik.php" class="user-dropdown-item">Moj profil</a>
               <?php endif; ?>
 
               <a href="logout.php" class="user-dropdown-item">Odjava</a>
