@@ -92,7 +92,7 @@ if ($canEdit && $_SERVER['REQUEST_METHOD'] === 'POST') {
     ");
 
     $stmt->bind_param(
-        'ssssssssdddi',
+        'sssssssssddi',
         $naziv,
         $telefon,
         $spletnaStran,
