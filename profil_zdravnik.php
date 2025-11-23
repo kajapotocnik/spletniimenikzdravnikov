@@ -12,8 +12,11 @@ $currentRole   = $_SESSION['user_vloga'] ?? null;
 
 $viewUserId = isset($_GET['id']) ? (int)$_GET['id'] : $currentUserId;
 
-// ali lahko ureja
-$canEdit = ($currentRole === 'ZDRAVNIK' && $currentUserId === $viewUserId);
+// ali je prijavljeni zdravnik lastnik tega profila
+$isOwner = ($currentRole === 'ZDRAVNIK' && $currentUserId === $viewUserId);
+
+// ali način urejanja
+$isEditMode = $isOwner && isset($_GET['edit']) && $_GET['edit'] === '1';
 
 // slika
 if (!function_exists('doctorImage')) {
@@ -83,7 +86,7 @@ if (!empty($allSpecs) && !empty($selectedSpecs)) {
 
 
 
-if ($canEdit && $_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($isEditMode && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $naziv       = trim($_POST['naziv']       ?? '');
     $telefon     = trim($_POST['telefon']     ?? '');
     $spletnaStran= trim($_POST['spletnaStran']?? '');
@@ -188,7 +191,7 @@ if ($canEdit && $_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 
-    header('Location: profil_zdravnik.php');
+    header('Location: profil_zdravnik.php?id=' . $viewUserId);
     exit;
 }
 
@@ -345,7 +348,7 @@ if ($userIme !== '' || $userPriimek !== '') {
             <section class="doctor-profile-right">
                 <header class="profile-header">
                     <h2>Podatki zdravnika</h2>
-                    <?php if ($canEdit): ?>
+                    <?php if ($isEditMode): ?>
                         <p>Tu lahko posodobiš svoje podatke, ki jih vidijo pacienti.</p>
                     <?php else: ?>
                         <p>To so podatki izbranega zdravnika.</p>
@@ -353,7 +356,7 @@ if ($userIme !== '' || $userPriimek !== '') {
                 </header>
 
                  <form method="post" class="doctor-profile-form" enctype="multipart/form-data">
-                    <?php if ($canEdit): ?>
+                    <?php if ($isEditMode): ?>
                         <div class="profile-group">
                             <label for="slika">Profilna slika</label>
                             <input
@@ -374,7 +377,7 @@ if ($userIme !== '' || $userPriimek !== '') {
                                 id="naziv"
                                 name="naziv"
                                 value="<?= htmlspecialchars($doc['naziv'] ?? '') ?>"
-                                <?= $canEdit ? '' : 'readonly' ?>
+                                <?= $isEditMode ? '' : 'readonly' ?>
                             >
                         </div>
 
@@ -385,7 +388,7 @@ if ($userIme !== '' || $userPriimek !== '') {
                                 id="telefon"
                                 name="telefon"
                                 value="<?= htmlspecialchars($doc['telefon'] ?? '') ?>"
-                                <?= $canEdit ? '' : 'readonly' ?>
+                                <?= $isEditMode ? '' : 'readonly' ?>
                             >
                         </div>
                     </div>
@@ -398,7 +401,7 @@ if ($userIme !== '' || $userPriimek !== '') {
                                 id="spletnaStran"
                                 name="spletnaStran"
                                 value="<?= htmlspecialchars($doc['spletnaStran'] ?? '') ?>"
-                                <?= $canEdit ? '' : 'readonly' ?>
+                                <?= $isEditMode ? '' : 'readonly' ?>
                             >
                         </div>
 
@@ -409,7 +412,7 @@ if ($userIme !== '' || $userPriimek !== '') {
                                 id="klinika"
                                 name="klinika"
                                 value="<?= htmlspecialchars($doc['klinika'] ?? '') ?>"
-                                <?= $canEdit ? '' : 'readonly' ?>
+                                <?= $isEditMode ? '' : 'readonly' ?>
                             >
                         </div>
                     </div>
@@ -419,7 +422,7 @@ if ($userIme !== '' || $userPriimek !== '') {
                         <textarea
                             id="bio"
                             name="bio"
-                            <?= $canEdit ? '' : 'readonly' ?>
+                            <?= $isEditMode ? '' : 'readonly' ?>
                         ><?= htmlspecialchars($doc['bio'] ?? '') ?></textarea>
                     </div>
 
@@ -433,7 +436,7 @@ if ($userIme !== '' || $userPriimek !== '') {
                                 id="ulica"
                                 name="ulica"
                                 value="<?= htmlspecialchars($doc['ulica'] ?? '') ?>"
-                                <?= $canEdit ? '' : 'readonly' ?>
+                                <?= $isEditMode ? '' : 'readonly' ?>
                             >
                         </div>
                         <div class="profile-group">
@@ -443,7 +446,7 @@ if ($userIme !== '' || $userPriimek !== '') {
                                 id="mesto"
                                 name="mesto"
                                 value="<?= htmlspecialchars($doc['mesto'] ?? '') ?>"
-                                <?= $canEdit ? '' : 'readonly' ?>
+                                <?= $isEditMode ? '' : 'readonly' ?>
                             >
                         </div>
                     </div>
@@ -456,7 +459,7 @@ if ($userIme !== '' || $userPriimek !== '') {
                                 id="postaSt"
                                 name="postaSt"
                                 value="<?= htmlspecialchars($doc['postaSt'] ?? '') ?>"
-                                <?= $canEdit ? '' : 'readonly' ?>
+                                <?= $isEditMode ? '' : 'readonly' ?>
                             >
                         </div>
                         <div class="profile-group">
@@ -466,7 +469,7 @@ if ($userIme !== '' || $userPriimek !== '') {
                                 id="country"
                                 name="country"
                                 value="<?= htmlspecialchars($doc['country'] ?? '') ?>"
-                                <?= $canEdit ? '' : 'readonly' ?>
+                                <?= $isEditMode ? '' : 'readonly' ?>
                             >
                         </div>
                     </div>
@@ -480,7 +483,7 @@ if ($userIme !== '' || $userPriimek !== '') {
                                 id="latitude"
                                 name="latitude"
                                 value="<?= $doc['latitude'] !== null ? htmlspecialchars($doc['latitude']) : '' ?>"
-                                <?= $canEdit ? '' : 'readonly' ?>
+                                <?= $isEditMode ? '' : 'readonly' ?>
                             >
                         </div>
                         <div class="profile-group">
@@ -491,7 +494,7 @@ if ($userIme !== '' || $userPriimek !== '') {
                                 id="longitude"
                                 name="longitude"
                                 value="<?= $doc['longitude'] !== null ? htmlspecialchars($doc['longitude']) : '' ?>"
-                                <?= $canEdit ? '' : 'readonly' ?>
+                                <?= $isEditMode ? '' : 'readonly' ?>
                             >
                         </div>
                         
@@ -508,7 +511,7 @@ if ($userIme !== '' || $userPriimek !== '') {
                                                 name="specializacije[]"
                                                 value="<?= (int)$s['id_specializacija'] ?>"
                                                 <?= $checked ? 'checked' : '' ?>
-                                                <?= $canEdit ? '' : 'disabled' ?>
+                                                <?= $isEditMode ? '' : 'disabled' ?>
                                             >
                                             <span><?= htmlspecialchars($s['naziv']) ?></span>
                                         </label>
@@ -518,13 +521,19 @@ if ($userIme !== '' || $userPriimek !== '') {
                         <?php endif; ?>
                     </div>
 
-                    <?php if ($canEdit): ?>
-                        <div class="profile-actions">
+                    <div class="profile-actions">
+                        <?php if ($isEditMode): ?>
                             <button type="submit" class="profile-save-btn">
                                 Shrani podatke
                             </button>
-                        </div>
-                    <?php endif; ?>
+                        <?php elseif ($isOwner): ?>
+                            <a href="profil_zdravnik.php?id=<?= (int)$viewUserId ?>&edit=1"
+                            class="profile-save-btn profile-edit-link">
+                                Posodobi podatke
+                            </a>
+                        <?php endif; ?>
+                    </div>
+
                 </form>
             </section>
         </div>

@@ -719,3 +719,46 @@ footer .container {
   background: rgba(15, 118, 110, 0.06);
   color: #0e9f93;
 }
+
+.read-more-btn {
+  --color: var(--teal1);
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 2px solid var(--color);
+  color: var(--color);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: color .3s ease, box-shadow .3s ease, transform .2s ease;
+}
+
+.read-more-btn::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 100%;
+  width: 140%;
+  height: 140%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal1), var(--teal2));
+  z-index: -1;
+  transition: all .35s ease;
+}
+
+.read-more-btn:hover {
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(31, 191, 157, 0.3);
+  transform: translateY(-1px);
+}
+
+.read-more-btn:hover::before {
+  top: -20%;
+  left: -20%;
+}

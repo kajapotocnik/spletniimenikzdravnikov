@@ -5,6 +5,7 @@ require __DIR__ . '/povezava.php';
 $sql = "
 SELECT
   d.id_zdravnik,
+  u.id_uporabnik,
   u.ime,
   u.priimek,
   GROUP_CONCAT(DISTINCT s.naziv ORDER BY s.naziv SEPARATOR ', ') AS specializacije,
@@ -434,6 +435,7 @@ if ($userIme !== '' || $userPriimek !== '') {
               <p class="doctor-specialization">
                 <?= $d['specializacije'] ? htmlspecialchars($d['specializacije']) : '—' ?>
               </p>
+              <a href="profil_zdravnik.php?id=<?= (int)$d['id_uporabnik'] ?>" class="read-more-btn"> Preberi več </a>
             </div>
           </article>
           <?php endforeach; ?>

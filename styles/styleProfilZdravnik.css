@@ -300,3 +300,9 @@ body {
   transform: translateY(-1px);
   box-shadow: 0 6px 14px rgba(31, 191, 157, 0.25);
 }
+
+.profile-edit-link {
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+}
