@@ -110,7 +110,46 @@ if ($canEdit && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $stmt->close();
 
-    // posodobi
+    // upload slika
+    $newImagePath = null;
+
+    if (isset($_FILES['slika']) && $_FILES['slika']['error'] !== UPLOAD_ERR_NO_FILE) {
+        if ($_FILES['slika']['error'] === UPLOAD_ERR_OK) {
+            $maxSize = 2 * 1024 * 1024;
+
+            if ($_FILES['slika']['size'] <= $maxSize) {
+                $ext = strtolower(pathinfo($_FILES['slika']['name'], PATHINFO_EXTENSION));
+                $allowed = ['jpg', 'jpeg', 'png'];
+
+                if (in_array($ext, $allowed, true)) {
+                    $targetDir = __DIR__ . '/img/doctors';
+
+                    if (!is_dir($targetDir)) {
+                        mkdir($targetDir, 0777, true);
+                    }
+
+                    // ime datoteke
+                    $fileName   = 'doctor_' . $doctorId . '.' . $ext;
+                    $fullPath   = $targetDir . '/' . $fileName;
+                    $relative   = 'img/doctors/' . $fileName;
+
+                    if (move_uploaded_file($_FILES['slika']['tmp_name'], $fullPath)) {
+                        $newImagePath = $relative;
+                    }
+                }
+            }
+        }
+    }
+
+    // zapiše v bazo
+    if ($newImagePath !== null && $doctorId) {
+        $stmtImg = $conn->prepare("UPDATE zdravnik SET slika_url = ? WHERE id_zdravnik = ?");
+        $stmtImg->bind_param('si', $newImagePath, $doctorId);
+        $stmtImg->execute();
+        $stmtImg->close();
+    }
+    
+    // posodobi specializacije
     if ($doctorId) {
         // zbriši stare
         $del = $conn->prepare("DELETE FROM specializacija_zdravnik WHERE TK_zdravnik = ?");
@@ -299,7 +338,20 @@ if ($userIme !== '' || $userPriimek !== '') {
                     <?php endif; ?>
                 </header>
 
-                <form method="post" class="doctor-profile-form">
+                 <form method="post" class="doctor-profile-form" enctype="multipart/form-data">
+                    <?php if ($canEdit): ?>
+                        <div class="profile-group">
+                            <label for="slika">Profilna slika</label>
+                            <input
+                                type="file"
+                                id="slika"
+                                name="slika"
+                                accept="image/*"
+                            >
+                            <small>Podprte vrste: JPG, PNG, max. 2 MB.</small>
+                        </div>
+                    <?php endif; ?>
+
                     <div class="profile-row">
                         <div class="profile-group">
                             <label for="naziv">Naziv</label>

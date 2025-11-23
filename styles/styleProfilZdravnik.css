@@ -258,3 +258,9 @@ body {
 .spec-pill input:disabled {
   cursor: default;
 }
+
+.profile-group input[type="file"] {
+  font-size: 0.9rem;
+  padding: 6px 0;
+}
+
