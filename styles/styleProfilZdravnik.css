@@ -390,3 +390,105 @@ body {
   font-size: 0.78rem;
   color: #6b7280;
 }
+
+.doctor-rate-box {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 22px 24px 26px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.10);
+  width: 90%;
+  max-width: 1150px;
+  margin: 24px auto;
+}
+
+.doctor-rate-box h3 {
+  font-size: 22px;
+  margin-bottom: 6px;
+  color: #0f172a;
+}
+
+.rate-note {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 18px;
+}
+
+.rating-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rating {
+  margin-bottom: 6px;
+}
+
+.rating > label {
+  margin-right: 4px;
+}
+
+.rating:not(:checked) > input {
+  display: none;
+}
+
+.rating:not(:checked) > label {
+  float: right;
+  cursor: pointer;
+  font-size: 26px;
+}
+
+.rating:not(:checked) > label > svg {
+  fill: #d1d5db;
+  transition: fill 0.3s ease;
+}
+
+.rating > input:checked ~ label > svg {
+  fill: #fbbf24;
+}
+
+.rating:not(:checked) > label:hover ~ label > svg,
+.rating:not(:checked) > label:hover > svg {
+  fill: #facc15;
+}
+
+#star1:checked ~ label > svg { fill: #ef4444; }
+#star2:checked ~ label > svg { fill: #f97316; }
+#star3:checked ~ label > svg { fill: #eab308; }
+#star4:checked ~ label > svg { fill: #22c55e; }
+#star5:checked ~ label > svg { fill: #22c55e; }
+
+.rating-comment {
+  width: 100%;
+  min-height: 90px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  resize: vertical;
+  font-size: 14px;
+  outline: none;
+}
+
+.rating-comment:focus {
+  outline: none;
+  border-color: var(--teal1);
+  box-shadow: 0 0 0 1px rgba(31,191,157,0.25);
+}
+
+.rating-submit-btn {
+  background: #14b8a6;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: 0.25s;
+}
+
+.rating-submit-btn:hover {
+  background: #0f766e;
+  transform: translateY(-1px);
+}
+

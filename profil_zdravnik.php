@@ -70,6 +70,25 @@ if ($doctorId) {
     $stmtOcene->close();
 }
 
+// samo uporabnik
+$canRate = ($currentRole === 'UPORABNIK' && $doctorId !== null);
+
+// je že ocenil ?
+$userRating = null;
+if ($canRate) {
+    $stmtUR = $conn->prepare("
+        SELECT ocena, komentar
+        FROM ocene
+        WHERE TK_uporabnik = ? AND TK_zdravnik = ?
+        LIMIT 1
+    ");
+    $stmtUR->bind_param('ii', $currentUserId, $doctorId);
+    $stmtUR->execute();
+    $resUR = $stmtUR->get_result();
+    $userRating = $resUR->fetch_assoc() ?: null;
+    $stmtUR->close();
+}
+
 
 if (!$docRow && $currentRole === 'ZDRAVNIK' && $currentUserId === $viewUserId) {
     // ustvarimo prazen zapis
@@ -217,6 +236,39 @@ if ($isEditMode && $_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+
+    header('Location: profil_zdravnik.php?id=' . $viewUserId);
+    exit;
+}
+
+// shranjevanje ocene
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    isset($_POST['action']) &&
+    $_POST['action'] === 'rate' &&
+    $canRate &&
+    $doctorId !== null
+) {
+    $ocena    = isset($_POST['rate']) ? (int)$_POST['rate'] : 0;
+    $komentar = trim($_POST['komentar'] ?? '');
+
+    if ($ocena < 1 || $ocena > 5) {
+        $ocena = 0;
+    }
+
+    if ($ocena > 0) {
+        // en uporabnik lahko oceni zdravnika samo enkrat
+        $stmtRate = $conn->prepare("
+            INSERT INTO ocene (ocena, komentar, TK_uporabnik, TK_zdravnik)
+            VALUES (?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                ocena = VALUES(ocena),
+                komentar = VALUES(komentar)
+        ");
+        $stmtRate->bind_param('isii', $ocena, $komentar, $currentUserId, $doctorId);
+        $stmtRate->execute();
+        $stmtRate->close();
+    }
 
     header('Location: profil_zdravnik.php?id=' . $viewUserId);
     exit;
@@ -565,6 +617,59 @@ if ($userIme !== '' || $userPriimek !== '') {
             </section>
         </div>
 
+        <?php if ($canRate): ?>
+            <div class="doctor-rate-box">
+                <h3>Oceni tega zdravnika</h3>
+                <?php if ($userRating): ?>
+                    <p class="rate-note"> Tvoja trenutna ocena: <strong><?= (int)$userRating['ocena'] ?>/5</strong>. Oceno in komentar lahko posodobiš.</p>
+                <?php else: ?>
+                    <p class="rate-note"> Izberi število zvezdic in dodaj kratek komentar o svoji izkušnji.</p>
+                <?php endif; ?>
+
+                <form method="post" class="rating-form">
+                    <input type="hidden" name="action" value="rate">
+
+                    <div class="rating">
+                        <input type="radio" id="star5" name="rate" value="5" <?= $userRating && (int)$userRating['ocena'] === 5 ? 'checked' : '' ?> />
+                        <label title="Odlično" for="star5">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"> <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.351.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.312.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.27.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                            </svg>
+                        </label>
+
+                        <input value="4" name="rate" id="star4" type="radio" <?= $userRating && (int)$userRating['ocena'] === 4 ? 'checked' : '' ?> />
+                        <label title="Zelo dobro" for="star4">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.351.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.312.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.27.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                            </svg>
+                        </label>
+
+                        <input value="3" name="rate" id="star3" type="radio"<?= $userRating && (int)$userRating['ocena'] === 3 ? 'checked' : '' ?> />
+                        <label title="Dobro" for="star3">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.351.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.312.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.27.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                            </svg>
+                        </label>
+
+                        <input value="2" name="rate" id="star2" type="radio" <?= $userRating && (int)$userRating['ocena'] === 2 ? 'checked' : '' ?> />
+                        <label title="Povprečno" for="star2">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.351.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.312.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.27.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                            </svg>
+                        </label>
+
+                        <input value="1" name="rate" id="star1" type="radio"<?= $userRating && (int)$userRating['ocena'] === 1 ? 'checked' : '' ?> />
+                        <label title="Slabo" for="star1">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.351.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.312.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.27.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                            </svg>
+                        </label>
+                    </div>
+
+                    <textarea name="komentar" class="rating-comment" placeholder="Dodaj kratek komentar (neobvezno)"><?= htmlspecialchars($userRating['komentar'] ?? '') ?></textarea>
+
+                    <button type="submit" class="rating-submit-btn">
+                        Pošlji oceno
+                    </button>
+                </form>
+            </div>
+        <?php endif; ?>
+        
         <section class="doctor-ratings-card">
         <div class="doctor-ratings-inner">
             <header class="ratings-header">
