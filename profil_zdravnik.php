@@ -44,6 +44,33 @@ if ($docRow) {
     $doctorId = (int)$docRow['id_zdravnik'];
 }
 
+// komentarji
+$ratings = [];
+
+if ($doctorId) {
+    $stmtOcene = $conn->prepare("
+        SELECT 
+            o.ocena,
+            o.komentar,
+            u.ime,
+            u.priimek
+        FROM ocene o
+        JOIN uporabnik u ON u.id_uporabnik = o.TK_uporabnik
+        WHERE o.TK_zdravnik = ?
+        ORDER BY o.id_ocene DESC
+    ");
+    $stmtOcene->bind_param('i', $doctorId);
+    $stmtOcene->execute();
+    $resOcene = $stmtOcene->get_result();
+
+    while ($row = $resOcene->fetch_assoc()) {
+        $ratings[] = $row;
+    }
+
+    $stmtOcene->close();
+}
+
+
 if (!$docRow && $currentRole === 'ZDRAVNIK' && $currentUserId === $viewUserId) {
     // ustvarimo prazen zapis
     $insEmpty = $conn->prepare("INSERT INTO zdravnik (TK_uporabnik) VALUES (?)");
@@ -533,10 +560,60 @@ if ($userIme !== '' || $userPriimek !== '') {
                             </a>
                         <?php endif; ?>
                     </div>
-
                 </form>
             </section>
+            </section>
         </div>
+
+        <section class="doctor-ratings-card">
+        <div class="doctor-ratings-inner">
+            <header class="ratings-header">
+                <h2>Mnenja pacientov</h2>
+                <p>Ocene in komentarji pacientov za tega zdravnika.</p>
+            </header>
+
+            <?php if (empty($ratings)): ?>
+                <p class="doctor-ratings-empty"> Ta zdravnik še nima ocen. </p>
+            <?php else: ?>
+                <div class="ratings-table-wrapper">
+                    <table class="ratings-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Pacient</th>
+                                <th>Ocena</th>
+                                <th>Komentar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $i = 1; ?>
+                            <?php foreach ($ratings as $r): ?>
+                                <tr>
+                                    <td><?= $i++ ?></td>
+                                    <td><?= htmlspecialchars($r['ime'] . ' ' . $r['priimek']) ?></td>
+                                    <td>
+                                        <span class="rating-stars">
+                                            <?php
+                                                $oc = (int)$r['ocena'];
+                                                echo str_repeat('★', $oc) . str_repeat('☆', 5 - $oc);
+                                            ?>
+                                        </span>
+                                        <span class="rating-number">(<?= (int)$r['ocena'] ?>/5)</span>
+                                    </td>
+                                    <td>
+                                        <?= $r['komentar'] !== null && $r['komentar'] !== '' 
+                                            ? htmlspecialchars($r['komentar']) 
+                                            : '—' ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </section>
+
     </main>
 
 </body>
