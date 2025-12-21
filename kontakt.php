@@ -93,6 +93,10 @@ if ($userIme !== '' || $userPriimek !== '') {
                     Pišite nam in odgovorili vam bomo v najkrajšem možnem času.
                 </p>
             </div>
+            <div class="hero-right hero-image">
+                <div class="doctor-bg"></div>
+                <img src="img/hero-doctor.png" alt="Zdravnica" class="hero-doctor"/>
+            </div>
         </div>
     </div>
 </section>
