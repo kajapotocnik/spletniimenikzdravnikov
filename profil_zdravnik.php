@@ -352,7 +352,7 @@ if ($userIme !== '' || $userPriimek !== '') {
             <li><a href="#" class="nav-link">Specialnosti</a></li>
             <li><a href="#" class="nav-link">Mesta</a></li>
             <li><a href="#" class="nav-link">Zdravstvene ustanove</a></li>
-            <li><a href="#" class="nav-link">Kontakt</a></li>
+            <li><a href="kontakt.php" class="nav-link">Kontakt</a></li>
           </ul>
         </nav>
         
