@@ -83,11 +83,6 @@ if (trim($initials) === '') $initials = 'A';
       <a class="sb-link" href="index.php"> Nazaj na imenik </a>
       <a class="sb-link danger" href="logout.php"> <span class="sb-ico">↩</span> Odjava </a>
     </nav>
-
-    <div class="sb-foot">
-      <span class="dot"></span>
-      <span>Admin način</span>
-    </div>
   </aside>
 
 
