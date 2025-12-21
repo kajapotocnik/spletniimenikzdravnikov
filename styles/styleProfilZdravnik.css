@@ -492,3 +492,17 @@ body {
   transform: translateY(-1px);
 }
 
+.download-pdf-wrap{
+  margin-top: 12px;
+  display: flex;
+  justify-content: center; /* da je lepo poravnan na sredino kartice */
+}
+
+.download-link{
+  display: inline-block;
+}
+
+/* da button lepo sede v levi stolpec */
+.download-button{
+  width: 100%;
+}
