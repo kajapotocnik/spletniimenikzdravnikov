@@ -492,7 +492,6 @@ body {
   transform: translateY(-1px);
 }
 
-/* From Uiverse.io by barisdogansutcu */ 
 .download-button {
   position: relative;
   border-width: 0;
@@ -562,4 +561,26 @@ body {
     transform: translateY(0%);
   }
 }
+
+.download-button.excel .download {
+  background-color: #22c55e;
+}
+
+.download-buttons-row{
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.download-button-row{
+  margin-top: 22px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+
 

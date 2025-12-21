@@ -2,7 +2,7 @@
 require __DIR__ . '/povezava.php';
 require __DIR__ . '/lib/tfpdf/tfpdf.php';
 
-// brez prijave ne izvažamo
+// brez prijave ne gre
 if (!isset($_SESSION['user_id'])) {
   header('Location: prijava.php');
   exit;
@@ -11,16 +11,10 @@ if (!isset($_SESSION['user_id'])) {
 $currentUserId = (int)$_SESSION['user_id'];
 $currentRole   = $_SESSION['user_vloga'] ?? null;
 
-// kateri profil izvažamo (če ni id, izvozimo svojega)
+// kateri profil izvažamo 
 $viewUserId = isset($_GET['id']) ? (int)$_GET['id'] : $currentUserId;
 
-// brez prijave ne izvažamo
-if (!isset($_SESSION['user_id'])) {
-  header('Location: prijava.php');
-  exit;
-}
-
-// najprej poiščemo id_zdravnik za tega uporabnika (enako kot v profilu)
+// najprej najde id_zdravnik za tega uporabnika
 $doctorId = null;
 $check = $conn->prepare("SELECT id_zdravnik FROM zdravnik WHERE TK_uporabnik = ? LIMIT 1");
 $check->bind_param('i', $viewUserId);
@@ -37,7 +31,7 @@ if (!$doctorId) {
   exit;
 }
 
-// podatki zdravnika (join na uporabnik)
+// podatki zdravnika
 $stmt = $conn->prepare("
   SELECT
     d.id_zdravnik,
@@ -92,7 +86,7 @@ $rOc = $stOcene->get_result();
 while ($row = $rOc->fetch_assoc()) $ratings[] = $row;
 $stOcene->close();
 
-// ===== PDF =====
+// PDF
 $pdf = new tFPDF('P', 'mm', 'A4');
 $pdf->SetAutoPageBreak(true, 14);
 $pdf->AddPage();
