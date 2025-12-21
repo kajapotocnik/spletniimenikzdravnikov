@@ -449,8 +449,10 @@ footer {
 }
 
 footer .container {
-  justify-content: space-between;
+  justify-content: center;
+  text-align: center;
 }
+
 
 .service-icon {
   width: 42px;

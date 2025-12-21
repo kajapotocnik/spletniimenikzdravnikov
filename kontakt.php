@@ -167,10 +167,35 @@ if ($userIme !== '' || $userPriimek !== '') {
       </div>
       <p>Naša lokacija je spodaj prikazana na Google zemljevidu.</p>
     </div>
-
   </div>
 </section>
 
+<section class="contact-map">
+  <div class="contact-map-inner">
+    <div class="map-card">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d106000.55334626233!2d14.532097749999998!3d46.06623985!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x476531f5969886d1%3A0x400f81c823fec20!2sLjubljana!5e1!3m2!1ssl!2ssi!4v1766326089481!5m2!1ssl!2ssi"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<footer>
+    <div class="container">
+    <div>
+        ©
+        <?php echo date('Y'); ?>
+        Spletni imenik zdravnikov. Vse pravice pridržane.
+    </div>
+    <div>
+        Mnenja pacientov niso nadomestilo za strokovni zdravniški nasvet.
+    </div>
+    </div>
+</footer>
+  </body>
 
 </body>
 </html>

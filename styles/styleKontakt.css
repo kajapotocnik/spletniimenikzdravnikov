@@ -247,3 +247,34 @@
 .cbox{ 
     height: 100%; 
 }
+
+.contact-map{
+  padding: 26px 0 70px;
+}
+
+.contact-map-inner{
+  width: min(1100px, 92%);
+  margin: 0 auto;
+}
+
+.map-card{
+  position: relative;
+  border-radius: 26px;
+  overflow: hidden;
+  border: 1px solid rgba(148,163,184,.22);
+  box-shadow: 0 26px 70px rgba(15,23,42,.12);
+  background: #fff;
+}
+
+.map-card iframe{
+  width: 100%;
+  height: 420px;
+  border: 0;
+  display: block;
+}
+
+@media (max-width: 768px){
+  .map-card iframe{
+    height: 320px;
+  }
+}
