@@ -454,8 +454,8 @@ body {
 #star1:checked ~ label > svg { fill: #ef4444; }
 #star2:checked ~ label > svg { fill: #f97316; }
 #star3:checked ~ label > svg { fill: #eab308; }
-#star4:checked ~ label > svg { fill: #22c55e; }
-#star5:checked ~ label > svg { fill: #22c55e; }
+#star4:checked ~ label > svg { fill: #9bf547; }
+#star5:checked ~ label > svg { fill: #0af10e; }
 
 .rating-comment {
   width: 100%;
