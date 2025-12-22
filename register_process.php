@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/povezava.php';
+require_once __DIR__ . '/mailer.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: prijava.php');
@@ -7,11 +8,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // podatki iz forme
-$ime      = trim($_POST['name']    ?? '');
-$priimek  = trim($_POST['surname'] ?? '');
-$email    = trim($_POST['email']   ?? '');
-$geslo    = $_POST['password']     ?? '';
-$jeZdravnikChecked = isset($_POST['je_zdravnik']) && $_POST['je_zdravnik'] === '1';
+$ime     = trim($_POST['name']    ?? '');
+$priimek = trim($_POST['surname'] ?? '');
+$email   = trim($_POST['email']   ?? '');
+$geslo   = $_POST['password']     ?? '';
 
 // validacija
 if ($ime === '' || $priimek === '' || $email === '' || $geslo === '') {
@@ -24,6 +24,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
+// preveri, če email že obstaja
 $check = $conn->prepare("SELECT 1 FROM uporabnik WHERE email = ? LIMIT 1");
 $check->bind_param('s', $email);
 $check->execute();
@@ -36,10 +37,10 @@ if ($check->num_rows > 0) {
 }
 $check->close();
 
-// checkbox
-$vloga = $jeZdravnikChecked ? 'ZDRAVNIK' : 'UPORABNIK';
+// vedno navaden uporabnik
+$vloga = 'UPORABNIK';
 
-// insert
+// insert uporabnika
 $ins = $conn->prepare("
     INSERT INTO uporabnik (email, geslo, ime, priimek, vloga)
     VALUES (?, ?, ?, ?, ?)
@@ -54,16 +55,6 @@ if (!$ins->execute()) {
 
 $userId = (int)$ins->insert_id;
 $ins->close();
-
-// prazen zapis
-if ($vloga === 'ZDRAVNIK') {
-    $insDoc = $conn->prepare("INSERT INTO zdravnik (TK_uporabnik) VALUES (?)");
-    $insDoc->bind_param('i', $userId);
-
-    // če to prekine bo uporabnik vseeno ustvarjen ampak profil zdravnika pa se uredi ročno
-    $insDoc->execute();
-    $insDoc->close();
-}
 
 // samodejna prijava
 $_SESSION['user_id']      = $userId;

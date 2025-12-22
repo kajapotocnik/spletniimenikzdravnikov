@@ -9,7 +9,7 @@
 <body>
 
 <a href="index.php" class="back-btn">
-  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" 
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
        viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
        stroke-linecap="round" stroke-linejoin="round">
     <polyline points="15 18 9 12 15 6"></polyline>
@@ -45,14 +45,6 @@
             <div class="form-group">
                 <input type="password" class="form-input" name="password" placeholder="Geslo" required>
             </div>
-
-            <div class="form-group role-check">
-                <label class="role-label">
-                    <input type="checkbox" name="je_zdravnik" value="1">
-                    <span>Želim imeti vlogo zdravnika</span>
-                </label>
-            </div>
-
             <button type="submit" class="btn-primary">Registracija</button>
         </form>
 
@@ -69,10 +61,6 @@
         </form>
     </div>
 </div>
-
-
-
-</body>
 
 <script>
   const preklop = document.getElementById('toggleModeBtn');
@@ -97,7 +85,7 @@
     textLevo.textContent  = 'Da ostaneš povezan z nami, se prosim prijavi s svojim osebnim računom.';
     preklop.textContent = 'Prijava';
     naslov.textContent = 'Ustvari račun';
-    regObrazec.style.display   = 'block';
+    regObrazec.style.display = 'block';
     prijObrazec.style.display = 'none';
     animacija();
   }
@@ -108,21 +96,18 @@
     textLevo.textContent  = 'Vnesite svoje podatke in naredite prvi korak na poti z nami.';
     preklop.textContent = 'Registracija';
     naslov.textContent = 'Prijava';
-    regObrazec.style.display   = 'none';
+    regObrazec.style.display = 'none';
     prijObrazec.style.display = 'block';
     animacija();
   }
 
   preklop.addEventListener('click', () => {
-    if (isPrijava) {
-      setRegistracija();
-    } else {
-      setPrijava();
-    }
+    if (isPrijava) setRegistracija();
+    else setPrijava();
   });
 
   setPrijava();
 </script>
 
-
+</body>
 </html>

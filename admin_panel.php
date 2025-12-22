@@ -68,7 +68,7 @@ if (trim($initials) === '') $initials = 'A';
     <div class="sb-brand">
       <div class="sb-logo">AD</div>
       <div>
-        <div class="sb-title">Admin Panel</div>
+        <div class="sb-title">Admin plošča</div>
         <div class="sb-sub">upravljanje sistema</div>
       </div>
     </div>

@@ -138,7 +138,7 @@ if ($userIme !== '' || $userPriimek !== '') {
               <?php endif; ?>
 
               <?php if (($_SESSION['user_vloga'] ?? '') === 'ADMIN'): ?>
-                <a href="admin_panel.php" class="user-dropdown-item">Admin panel</a>
+                <a href="admin_panel.php" class="user-dropdown-item">Admin plošča</a>
               <?php endif; ?>
 
               <a href="logout.php" class="user-dropdown-item">Odjava</a>
