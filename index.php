@@ -461,29 +461,44 @@ if ($userIme !== '' || $userPriimek !== '') {
     </footer>
   </body>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const gumbFilter = document.querySelectorAll(".filter-btn");
-      const kartica = document.querySelectorAll(".doctor-card"); 
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // obnovi
+    const savedScroll = sessionStorage.getItem("indexScrollY");
+    if (savedScroll !== null) {
+      window.scrollTo(0, parseInt(savedScroll, 10));
+      sessionStorage.removeItem("indexScrollY");
+    }
 
-      gumbFilter.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          gumbFilter.forEach((b) => b.classList.remove("active"));
-          btn.classList.add("active");
+    // shrani ob kliku na "Preberi več"
+    document.querySelectorAll(".read-more-btn").forEach((link) => {
+      link.addEventListener("click", () => {
+        sessionStorage.setItem("indexScrollY", String(window.scrollY));
+      });
+    });
 
-          const filter = btn.dataset.filter;
+    const gumbFilter = document.querySelectorAll(".filter-btn");
+    const kartica = document.querySelectorAll(".doctor-card");
 
-          kartica.forEach((card) => {
-            const spec = card.dataset.specializacija || "";
+    gumbFilter.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        gumbFilter.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
 
-            if (filter === "all" || spec.includes(filter)) {
-              card.style.display = "block";
-            } else {
-              card.style.display = "none";
-            }
-          });
+        const filter = btn.dataset.filter;
+
+        kartica.forEach((card) => {
+          const spec = card.dataset.specializacija || "";
+
+          if (filter === "all" || spec.includes(filter)) {
+            card.style.display = "block";
+          } else {
+            card.style.display = "none";
+          }
         });
       });
     });
-  </script>
+  });
+</script>
+
 </html>

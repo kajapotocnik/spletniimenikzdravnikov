@@ -448,6 +448,14 @@ if ($userIme !== '' || $userPriimek !== '') {
                         </a>
                     </div>
                 </div>
+                <a href="index.php" class="back-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                        viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    Nazaj na stran
+                </a>
             </aside>
 
             <section class="doctor-profile-right">
@@ -754,3 +762,12 @@ if ($userIme !== '' || $userPriimek !== '') {
 
 </body>
 </html>
+
+<script>
+  const backBtn = document.querySelector('.back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+    });
+  }
+</script>
+
