@@ -70,10 +70,16 @@
 
 .spec-photo{
   height: 120px;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(31,191,157,.22), transparent 60%),
-    radial-gradient(circle at 70% 60%, rgba(0,166,181,.18), transparent 62%),
-    linear-gradient(135deg, rgba(13,22,52,.10), rgba(0,166,181,.10));
+  background-color: #e5e7eb;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+
+.spec-photo:not(.lazy-bg){
+  opacity: 1;
 }
 
 .spec-body{
@@ -90,7 +96,7 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 14px 32px rgba(31,191,157,.28);
-  margin-top: -34px; /* “plava” čez sliko */
+  margin-top: -34px;
   border: 6px solid rgba(255,255,255,.95);
 }
 

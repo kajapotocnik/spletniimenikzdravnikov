@@ -49,8 +49,6 @@ function ikonaSpecialnosti(string $naziv): string
     };
 }
 
-
-
 // opisi
 function opisSpecialnosti(string $naziv): string {
   $n = mb_strtolower($naziv, 'UTF-8');
@@ -67,6 +65,18 @@ function opisSpecialnosti(string $naziv): string {
     default                       => 'Specialistična obravnava in svetovanje.',
   };
 }
+
+$slikeSpecialnosti = [
+  'Družinski zdravnik' => 'druzinski_zdravnik.jpg',
+  'Kardiolog'         => 'kardiolog.jpg',
+  'Nevrolog'          => 'nevrolog.jpg',
+  'Ortoped'           => 'ortoped.jpg',
+  'Zobozdravnik'      => 'zobozdravnik.jpg',
+  'Oftalmolog'        => 'oftalmolog.jpg',
+  'Ginekolog'         => 'ginekolog.jpg',
+  'Pediater'          => 'pediater.jpg',
+];
+
 
 // preberi specialnosti
 $poizvedba = "
@@ -181,7 +191,10 @@ if ($rezultat) {
 
       <?php foreach ($specialnosti as $specialnost): ?>
         <article class="spec-card">
-          <div class="spec-photo" aria-hidden="true"></div>
+          <?php
+            $file = $slikeSpecialnosti[$specialnost['naziv']] ?? 'default.jpg';
+            $imgPath = 'img/specialnosti/' . $file; ?>
+            <div class="spec-photo lazy-bg" data-bg="<?= htmlspecialchars($imgPath) ?>"></div>
 
           <div class="spec-body">
             <div class="spec-ico">
@@ -216,6 +229,40 @@ if ($rezultat) {
   </body>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const elementi = document.querySelectorAll(".lazy-bg");
+
+  if (!("IntersectionObserver" in window)) { //če ne podpira IntersectionObserver
+    // slike se naložijo brez lazy loading
+    elementi.forEach(element => {
+      element.style.backgroundImage = `url('${element.dataset.bg}')`;
+      element.classList.remove("lazy-bg");
+    });
+    return;
+  }
+
+  // vidno
+  const najdi = new IntersectionObserver((vnosi, obs) => {
+    vnosi.forEach(vnos => {
+      if (!vnos.isIntersecting) return;
+
+      const element = vnos.target;
+      const src = element.dataset.bg;
+
+      // data-bg
+      if (src) element.style.backgroundImage = `url('${src}')`;
+
+      // odstrani lazy-bg
+      element.classList.remove("lazy-bg");
+      obs.unobserve(element);
+    });
+  }, { 
+    rootMargin: "200px 0px" //je 200px preden je vidna
+  });
+
+  elementi.forEach(element => najdi.observe(element));
+});
 </script>
+
 
 </html>

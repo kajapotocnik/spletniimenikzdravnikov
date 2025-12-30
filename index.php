@@ -180,7 +180,6 @@ if ($userIme !== '' || $userPriimek !== '') {
           in zdravstvenimi ustanovami. Pregledne informacije, realne ocene
           pacientov in jasen pregled terminov.
         </p>
-        <a href="#" class="btn-choose">Izberi diagnostiko</a>
       </div>
 
       <div class="diagnostics-right">
