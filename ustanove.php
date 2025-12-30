@@ -215,7 +215,7 @@ $opisiUstanov = [
             <p class="ustanova-desc"> <?= htmlspecialchars($opis) ?> </p>
 
             <div class="ustanova-actions">
-              <a href="#" class="btn-main">Več informacij</a>
+              <a href="#" class="read-more-btnn">Več informacij</a>
 
               <div class="ustanova-meta">
                 <div>
