@@ -347,12 +347,12 @@ if ($userIme !== '' || $userPriimek !== '') {
         </div>
         <nav>
           <ul>
-            <li><a href="index.php" class="nav-link">Domov</a></li>
-            <li><a href="#" class="nav-link">Poišči zdravnika</a></li>
-            <li><a href="#" class="nav-link">Specialnosti</a></li>
-            <li><a href="#" class="nav-link">Mesta</a></li>
-            <li><a href="#" class="nav-link">Zdravstvene ustanove</a></li>
-            <li><a href="kontakt.php" class="nav-link">Kontakt</a></li>
+            <li><a href="/spletniimenikzdravnikov/" class="nav-link">Domov</a></li>
+            <li><a href="/spletniimenikzdravnikov/zdravniki" class="nav-link">Poišči zdravnika</a></li>
+            <li><a href="/spletniimenikzdravnikov/specialnosti" class="nav-link">Specialnosti</a></li>
+            <li><a href="/spletniimenikzdravnikov/ustanove" class="nav-link">Zdravstvene ustanove</a></li>
+            <li><a href="/spletniimenikzdravnikov/statistika" class="nav-link">Statistika</a></li>
+            <li><a href="/spletniimenikzdravnikov/kontakt" class="nav-link">Kontakt</a></li>
           </ul>
         </nav>
         
