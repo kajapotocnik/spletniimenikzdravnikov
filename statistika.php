@@ -138,6 +138,29 @@ if ($res = $conn->query($sqlMesta)) {
   $res->free();
 }
 
+// graf: povprečna ocena vsakega zdravnika
+$zdrLabels = [];
+$zdrAvg = [];
+
+$sqlZdr = "
+  SELECT z.id_zdravnik,
+         CONCAT(u.ime, ' ', u.priimek) AS zdravnik,
+         ROUND(AVG(o.ocena), 2) AS povprecje
+  FROM zdravnik z
+  JOIN uporabnik u ON u.id_uporabnik = z.TK_uporabnik
+  LEFT JOIN ocene o ON o.TK_zdravnik = z.id_zdravnik
+  GROUP BY z.id_zdravnik, u.ime, u.priimek
+  ORDER BY povprecje DESC, zdravnik ASC
+";
+
+if ($res = $conn->query($sqlZdr)) {
+  while ($row = $res->fetch_assoc()) {
+    $zdrLabels[] = (string)$row['zdravnik'];
+    // če ni ocen, AVG je NULL -> damo 0
+    $zdrAvg[] = $row['povprecje'] !== null ? (float)$row['povprecje'] : 0.0;
+  }
+  $res->free();
+}
 
 ?>
 
@@ -312,12 +335,11 @@ if ($res = $conn->query($sqlMesta)) {
       <div>
         <div class="card-box">
           <div class="card-head">
-            <div class="card-title">Zdravniki</div>
+            <div class="card-title">Povprečna ocena vsakega zdravnika</div>
           </div>
-
           <div class="card-body">
-            <div class="chart-placeholder" aria-label="Prostor za graf">
-              graf
+            <div class="chart-placeholder mini chart-wrap">
+                <canvas id="zdravnikiChart"></canvas>
             </div>
           </div>
         </div>
@@ -535,6 +557,50 @@ if ($res = $conn->query($sqlMesta)) {
   })();
 </script>
 
+<script>
+  (function () {
+    const labels = <?= json_encode($zdrLabels, JSON_UNESCAPED_UNICODE) ?> || [];
+    const values = <?= json_encode($zdrAvg, JSON_UNESCAPED_UNICODE) ?> || [];
+
+    const canvas = document.getElementById('zdravnikiChart');
+    const wrap = canvas?.closest('.chart-wrap');
+
+    if (!canvas || labels.length === 0) {
+      if (wrap) wrap.innerHTML = '<div style="padding:12px;color:#64748b;font-size:13px">Ni podatkov za prikaz grafa.</div>';
+      return;
+    }
+
+    new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Povprečna ocena',
+          data: values,
+          tension: 0.3,
+          fill: true,
+          pointRadius: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          title: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            min: 0,
+            max: 5,
+            ticks: { stepSize: 1 }
+          }
+        }
+      }
+    });
+  })();
+</script>
 
 
 </html>
