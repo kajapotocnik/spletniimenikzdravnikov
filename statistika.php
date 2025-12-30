@@ -98,6 +98,47 @@ if ($res = $conn->query($sqlSpec)) {
   $res->free();
 }
 
+// graf: zdravniki po ustanovi (klinika)
+$ustLabels = [];
+$ustCounts = [];
+
+$sqlUst = "
+  SELECT klinika AS naziv, COUNT(*) AS st
+  FROM zdravnik
+  WHERE klinika IS NOT NULL AND klinika <> ''
+  GROUP BY klinika
+  ORDER BY st DESC, naziv ASC
+";
+
+if ($res = $conn->query($sqlUst)) {
+  while ($row = $res->fetch_assoc()) {
+    $ustLabels[] = (string)$row['naziv'];
+    $ustCounts[] = (int)$row['st'];
+  }
+  $res->free();
+}
+
+// graf: zdravniki po mestu
+$mestaLabels = [];
+$mestaCounts = [];
+
+$sqlMesta = "
+  SELECT mesto AS naziv, COUNT(*) AS st
+  FROM zdravnik
+  WHERE mesto IS NOT NULL AND mesto <> ''
+  GROUP BY mesto
+  ORDER BY st DESC, naziv ASC
+";
+
+if ($res = $conn->query($sqlMesta)) {
+  while ($row = $res->fetch_assoc()) {
+    $mestaLabels[] = (string)$row['naziv'];
+    $mestaCounts[] = (int)$row['st'];
+  }
+  $res->free();
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -298,8 +339,8 @@ if ($res = $conn->query($sqlSpec)) {
               <div class="card-title">Ustanove</div>
             </div>
             <div class="card-body">
-              <div class="chart-placeholder mini" aria-label="Prostor za graf">
-                graf
+              <div class="chart-placeholder mini chart-wrap">
+                <canvas id="ustanoveChart"></canvas>
               </div>
             </div>
           </div>
@@ -312,8 +353,8 @@ if ($res = $conn->query($sqlSpec)) {
             <div class="card-title">Mesta</div>
           </div>
           <div class="card-body">
-            <div class="chart-placeholder small" aria-label="Prostor za graf">
-              graf
+            <div class="chart-placeholder mini chart-wrap">
+                <canvas id="mestaChart"></canvas>
             </div>
           </div>
         </div>
@@ -406,6 +447,88 @@ if ($res = $conn->query($sqlSpec)) {
         plugins: {
           legend: false,
           title: { display: false }
+        }
+      }
+    });
+  })();
+</script>
+
+<script>
+  (function () {
+    const labels = <?= json_encode($ustLabels, JSON_UNESCAPED_UNICODE) ?> || [];
+    const values = <?= json_encode($ustCounts, JSON_UNESCAPED_UNICODE) ?> || [];
+
+    const canvas = document.getElementById('ustanoveChart');
+    const wrap = canvas?.closest('.chart-wrap');
+
+    if (!canvas || labels.length === 0) {
+      if (wrap) wrap.innerHTML = '<div style="padding:12px;color:#64748b;font-size:13px">Ni podatkov za prikaz grafa.</div>';
+      return;
+    }
+
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Št. zdravnikov',
+          data: values,
+          borderWidth: 2,
+          borderRadius: Number.MAX_VALUE,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: false,
+          title: { display: false}
+        },
+        scales: {
+          y: { beginAtZero: true, ticks: { precision: 0 } }
+        }
+      }
+    });
+  })();
+</script>
+
+<script>
+  (function () {
+    const labels = <?= json_encode($mestaLabels, JSON_UNESCAPED_UNICODE) ?> || [];
+    const values = <?= json_encode($mestaCounts, JSON_UNESCAPED_UNICODE) ?> || [];
+
+    const canvas = document.getElementById('mestaChart');
+    const wrap = canvas?.closest('.chart-wrap');
+
+    if (!canvas || labels.length === 0) {
+      if (wrap) wrap.innerHTML = '<div style="padding:12px;color:#64748b;font-size:13px">Ni podatkov za prikaz grafa.</div>';
+      return;
+    }
+
+    new Chart(canvas, {
+      type: 'radar',
+      data: {
+        labels,
+        datasets: [
+        {
+            data: values,
+            fill: true
+        }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          title: { display: false}
+        },
+        scales: {
+          r: {
+            beginAtZero: true,
+            ticks: { display: false }
+          }
         }
       }
     });
