@@ -29,6 +29,64 @@ $sql = "
 
 $rezultat = $conn->query($sql);
 $ustanove = $rezultat ? $rezultat->fetch_all(MYSQLI_ASSOC) : [];
+
+$slikeUstanov = [
+  'CeljMed Center' => 'CeljMed Center.jpg',
+  'DermaCenter' => 'DermaCenter.jpg',
+  'MediKoper' => 'MediKoper.jpg',
+  'Očesna klinika Koper' => 'Ocesna klinika Koper.jpg',
+  'Ortopedska klinika Valdoltra' => 'Ortopedska klinika Valdoltra.jpg',
+  'Pediatrična klinika' => 'Pediatricna klinika.jpg',
+  'SB Celje' => 'SB Celje.jpg',
+  'Srčni Center' => 'Srcni Center.jpg',
+  'UKC Ljubljana' => 'UKC Ljubljana.jpg',
+  'UKC Maribor' => 'UKC Maribor.jpg',
+  'ZD Ljubljana Šiška' => 'ZD Ljubljana Siska.jpg',
+  'Zdravje Plus' => 'Zdravje Plus.jpg',
+  'Zobna ordinacija Mlakar' => 'Zobna ordinacija Mlakar.jpg',
+];
+
+$opisiUstanov = [
+  'CeljMed Center' =>
+    'CeljMed Center združuje sodobno diagnostiko, izkušene specialiste in osebni pristop k zdravljenju pacientov.',
+
+  'DermaCenter' =>
+    'DermaCenter je specializiran za dermatološko diagnostiko, zdravljenje kožnih bolezni in estetsko medicino.',
+
+  'MediKoper' =>
+    'MediKoper nudi širok spekter specialističnih ambulant z uporabo naprednih medicinskih tehnologij.',
+
+  'Očna klinika Koper' =>
+    'Očna klinika Koper se osredotoča na zdravljenje očesnih bolezni, kirurgijo vida in preventivne preglede.',
+
+  'Ortopedska klinika Valdoltra' =>
+    'Valdoltra je priznana ortopedska ustanova, specializirana za zdravljenje poškodb in bolezni gibalnega sistema.',
+
+  'Pediatrična klinika' =>
+    'Pediatrična klinika zagotavlja celostno zdravstveno oskrbo otrok in mladostnikov z multidisciplinarnim pristopom.',
+
+  'SB Celje' =>
+    'Splošna bolnišnica Celje nudi bolnišnično in specialistično zdravljenje z dolgoletno tradicijo.',
+
+  'Srčni Center' =>
+    'Srčni Center je specializiran za diagnostiko in zdravljenje bolezni srca ter ožilja.',
+
+  'UKC Ljubljana' =>
+    'UKC Ljubljana je največja zdravstvena ustanova v Sloveniji z vrhunsko klinično in raziskovalno dejavnostjo.',
+
+  'UKC Maribor' =>
+    'UKC Maribor zagotavlja terciarno zdravstveno oskrbo in sodobne diagnostične ter terapevtske postopke.',
+
+  'ZD Ljubljana Šiška' =>
+    'Zdravstveni dom Ljubljana Šiška nudi primarno zdravstveno oskrbo za prebivalce lokalne skupnosti.',
+
+  'Zdravje Plus' =>
+    'Zdravje Plus ponuja hitre in kakovostne zdravstvene storitve s poudarkom na preventivi.',
+
+  'Zobna ordinacija Mlakar' =>
+    'Zobna ordinacija Mlakar nudi sodobno zobozdravstveno oskrbo z individualnim pristopom k pacientom.',
+];
+
 ?>
 
 <!DOCTYPE html>
@@ -111,9 +169,17 @@ $ustanove = $rezultat ? $rezultat->fetch_all(MYSQLI_ASSOC) : [];
     <?php else: ?>
       <?php foreach ($ustanove as $u): ?>
         <div class="ustanova-card">
-          <div class="ustanova-left">
-            <div class="ustanova-photo"
-                 style="background-image:url('img/hospital.jpg');">
+            <?php
+            $imeUstanove = $u['klinika'];
+
+            if (isset($slikeUstanov[$imeUstanove])) {
+                $imgPath = 'img/ustanove/' . $slikeUstanov[$imeUstanove];
+            } else {
+                $imgPath = 'img/ustanove/default.jpg';
+            }
+            ?>
+            <div class="ustanova-left">
+            <div class="ustanova-photo lazy-bg" data-bg="<?= htmlspecialchars($imgPath) ?>">
             </div>
 
             <div class="ustanova-mini">
@@ -137,10 +203,13 @@ $ustanove = $rezultat ? $rezultat->fetch_all(MYSQLI_ASSOC) : [];
               <?= htmlspecialchars($u['klinika']) ?>
             </h2>
 
-            <p class="ustanova-desc">
-              Združujemo strokovno medicinsko znanje, sodobno tehnologijo
-              ter celostni pristop, osredotočen na pacienta.
-            </p>
+            <?php
+            $imeUstanove = $u['klinika'];
+
+            $opis = $opisiUstanov[$imeUstanove]
+                ?? 'Združujemo strokovno medicinsko znanje, sodobno tehnologijo ter celostni pristop, osredotočen na pacienta.';
+            ?>
+            <p class="ustanova-desc"> <?= htmlspecialchars($opis) ?> </p>
 
             <div class="ustanova-actions">
               <a href="#" class="btn-main">Več informacij</a>
@@ -178,6 +247,40 @@ $ustanove = $rezultat ? $rezultat->fetch_all(MYSQLI_ASSOC) : [];
   </body>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const elementi = document.querySelectorAll(".lazy-bg");
 
+  if (!("IntersectionObserver" in window)) { //če ne podpira IntersectionObserver
+    // slike se naložijo brez lazy loading
+    elementi.forEach(element => {
+      element.style.backgroundImage = `url('${element.dataset.bg}')`;
+      element.classList.remove("lazy-bg");
+    });
+    return;
+  }
+
+  // vidno
+  const najdi = new IntersectionObserver((vnosi, obs) => {
+    vnosi.forEach(vnos => {
+      if (!vnos.isIntersecting) return;
+
+      const element = vnos.target;
+      const src = element.dataset.bg;
+
+      // data-bg
+      if (src) element.style.backgroundImage = `url('${src}')`;
+
+      // odstrani lazy-bg
+      element.classList.remove("lazy-bg");
+      obs.unobserve(element);
+    });
+  }, { 
+    rootMargin: "200px 0px" //je 200px preden je vidna
+  });
+
+  elementi.forEach(element => najdi.observe(element));
+});
 </script>
+
+
 </html>

@@ -77,7 +77,6 @@ $slikeSpecialnosti = [
   'Pediater' => 'pediater.jpg',
 ];
 
-
 // preberi specialnosti
 $poizvedba = "
   SELECT id_specializacija, naziv
