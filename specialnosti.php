@@ -101,22 +101,6 @@ $poizvedbaGraf = "
   GROUP BY s.id_specializacija, s.naziv
   ORDER BY s.naziv
 ";
-
-
-$grafLabels = [];
-$grafValues = [];
-$rezGraf = $conn->query($poizvedbaGraf);
-if ($rezGraf) {
-  while ($r = $rezGraf->fetch_assoc()) {
-    $grafLabels[] = $r['naziv'];
-    $grafValues[] = (int)($r['st'] ?? 0);
-  }
-} else {
-  foreach ($specialnosti as $s) {
-    $grafLabels[] = $s['naziv'];
-    $grafValues[] = 0;
-  }
-}
 ?>
 
 <!DOCTYPE html>
@@ -139,7 +123,6 @@ if ($rezGraf) {
             <li><a href="index.php" class="nav-link">Domov</a></li>
             <li><a href="zdravniki.php" class="nav-link">Poišči zdravnika</a></li>
             <li><a href="specialnosti.php" class="nav-link active">Specialnosti</a></li>
-            <li><a href="mesta.php" class="nav-link">Mesta</a></li>
             <li><a href="ustanove.php" class="nav-link">Zdravstvene ustanove</a></li>
             <li><a href="kontakt.php" class="nav-link">Kontakt</a></li>
           </ul>
@@ -184,7 +167,7 @@ if ($rezGraf) {
     </div>
   </section>
 
-  <section class="spec-section">S
+  <section class="spec-section">
     <div class="spec-grid">
       <?php if (!$specialnosti): ?>
         <p>Trenutno ni specialnosti v bazi.</p>
