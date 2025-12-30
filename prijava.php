@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<a href="index.php" class="back-btn">
+<a href="/spletniimenikzdravnikov/" class="back-btn">
   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
        viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
        stroke-linecap="round" stroke-linejoin="round">

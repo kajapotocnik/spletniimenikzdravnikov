@@ -1,5 +1,49 @@
 <?php
 require __DIR__ . '/povezava.php';
+require __DIR__ . '/lib/Bramus/Router/Router.php';
+use Bramus\Router\Router;
+
+$router = new Router();
+$router->setBasePath('/spletniimenikzdravnikov');
+
+// Statistika
+$router->get('/statistika', function () {
+  require __DIR__ . '/statistika.php';
+  exit;
+});
+
+// Ustanove
+$router->get('/ustanove', function () {
+  require __DIR__ . '/ustanove.php';
+  exit;
+});
+
+// Zdravniki
+$router->get('/zdravniki', function () {
+  require __DIR__ . '/zdravniki.php';
+  exit;
+});
+
+// Specialnosti
+$router->get('/specialnosti', function () {
+  require __DIR__ . '/specialnosti.php';
+  exit;
+});
+
+// Kontakt
+$router->get('/kontakt', function () {
+  require __DIR__ . '/kontakt.php';
+  exit;
+});
+
+// Prijava
+$router->get('/prijava', function () {
+  require __DIR__ . '/prijava.php';
+  exit;
+});
+
+// Če NI nobenega ruta, gre na index.php
+$router->run();
 
 // prebere zdravnike
 $sql = "
@@ -108,17 +152,18 @@ if ($userIme !== '' || $userPriimek !== '') {
         </div>
         <nav>
           <ul>
-            <li><a href="index.php" class="nav-link active">Domov</a></li>
-            <li><a href="zdravniki.php" class="nav-link">Poišči zdravnika</a></li>
-            <li><a href="specialnosti.php" class="nav-link">Specialnosti</a></li>
-            <li><a href="ustanove.php" class="nav-link">Zdravstvene ustanove</a></li>
-            <li><a href="statistika.php" class="nav-link">Statistika</a></li>
-            <li><a href="kontakt.php" class="nav-link">Kontakt</a></li>
+            <li><a href="/spletniimenikzdravnikov/" class="nav-link active">Domov</a></li>
+            <li><a href="/spletniimenikzdravnikov/zdravniki" class="nav-link">Poišči zdravnika</a></li>
+            <li><a href="/spletniimenikzdravnikov/specialnosti" class="nav-link">Specialnosti</a></li>
+            <li><a href="/spletniimenikzdravnikov/ustanove" class="nav-link">Zdravstvene ustanove</a></li>
+            <li><a href="/spletniimenikzdravnikov/statistika" class="nav-link">Statistika</a></li>
+            <li><a href="/spletniimenikzdravnikov/kontakt" class="nav-link">Kontakt</a></li>
           </ul>
         </nav>
+
         
         <?php if (!$isLoggedIn): ?>
-          <a href="prijava.php" class="btn-nav">Prijava</a>
+          <a href="/spletniimenikzdravnikov/prijava" class="btn-nav">Prijava</a>
         <?php else: ?>
           <div class="user-menu">
             <button class="user-menu-trigger" type="button">
