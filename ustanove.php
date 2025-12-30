@@ -1,19 +1,21 @@
 <?php
 require __DIR__ . '/povezava.php';
 
-// prijava
+// PRIJAVA - podatki
 $isLoggedIn = isset($_SESSION['user_id']);
 $userIme = $_SESSION['user_ime'] ?? '';
 $userPriimek = $_SESSION['user_priimek'] ?? '';
 $userFullName = trim($userIme . ' ' . $userPriimek);
-$userEmail = $_SESSION['user_email'] ?? '';
 
-// inicialke (za avatar)
-$inicialke = 'U';
+$userVloga = $_SESSION['user_vloga'] ?? null;
+$isDoctor = $isLoggedIn && $userVloga === 'ZDRAVNIK'; // samo zdravniki
+
+// če ni imena
+$initials = 'U';
 if ($userIme !== '' || $userPriimek !== '') {
-  $prva = mb_substr($userIme, 0, 1, 'UTF-8');
-  $druga = mb_substr($userPriimek, 0, 1, 'UTF-8');
-  $inicialke = mb_strtoupper($prva . $druga, 'UTF-8');
+    $first = mb_substr($userIme, 0, 1, 'UTF-8');
+    $last  = mb_substr($userPriimek, 0, 1, 'UTF-8');
+    $initials = mb_strtoupper($first . $last, 'UTF-8');
 }
 
 $sql = "

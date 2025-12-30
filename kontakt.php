@@ -3,21 +3,21 @@ require __DIR__ . '/povezava.php';
 
 $success = isset($_GET['sent']) && $_GET['sent'] === '1';
 
-// prijava
+// PRIJAVA - podatki
 $isLoggedIn = isset($_SESSION['user_id']);
 $userIme = $_SESSION['user_ime'] ?? '';
 $userPriimek = $_SESSION['user_priimek'] ?? '';
 $userFullName = trim($userIme . ' ' . $userPriimek);
 
 $userVloga = $_SESSION['user_vloga'] ?? null;
-$isDoctor = $isLoggedIn && $userVloga === 'ZDRAVNIK';
+$isDoctor = $isLoggedIn && $userVloga === 'ZDRAVNIK'; // samo zdravniki
 
 // če ni imena
 $initials = 'U';
 if ($userIme !== '' || $userPriimek !== '') {
-  $first = mb_substr($userIme, 0, 1, 'UTF-8');
-  $last  = mb_substr($userPriimek, 0, 1, 'UTF-8');
-  $initials = mb_strtoupper($first . $last, 'UTF-8');
+    $first = mb_substr($userIme, 0, 1, 'UTF-8');
+    $last  = mb_substr($userPriimek, 0, 1, 'UTF-8');
+    $initials = mb_strtoupper($first . $last, 'UTF-8');
 }
 ?>
 
