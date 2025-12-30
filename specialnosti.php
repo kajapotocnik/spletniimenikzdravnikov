@@ -55,26 +55,26 @@ function opisSpecialnosti(string $naziv): string {
 
   return match (true) {
     str_contains($n, 'družinski') => 'Osnovna zdravstvena obravnava, preventivni pregledi in napotitve.',
-    str_contains($n, 'ginek')     => 'Zdravje žensk, ginekološki pregledi, nosečnost in preventiva.',
-    str_contains($n, 'kardi')     => 'Diagnostika in zdravljenje bolezni srca in ožilja.',
-    str_contains($n, 'nevro')     => 'Težave z živčevjem: glavoboli, vrtoglavice, nevrološke bolezni.',
-    str_contains($n, 'oftal')     => 'Pregledi vida, očesne bolezni, svetovanje in zdravljenje.',
-    str_contains($n, 'ortop')     => 'Poškodbe in bolezni kosti, sklepov ter gibalnega aparata.',
-    str_contains($n, 'pedi')      => 'Zdravstvena oskrba dojenčkov, otrok in mladostnikov.',
-    str_contains($n, 'zobo')      => 'Preventiva in zdravljenje zob ter ustne votline.',
-    default                       => 'Specialistična obravnava in svetovanje.',
+    str_contains($n, 'ginek') => 'Zdravje žensk, ginekološki pregledi, nosečnost in preventiva.',
+    str_contains($n, 'kardi') => 'Diagnostika in zdravljenje bolezni srca in ožilja.',
+    str_contains($n, 'nevro') => 'Težave z živčevjem: glavoboli, vrtoglavice, nevrološke bolezni.',
+    str_contains($n, 'oftal') => 'Pregledi vida, očesne bolezni, svetovanje in zdravljenje.',
+    str_contains($n, 'ortop') => 'Poškodbe in bolezni kosti, sklepov ter gibalnega aparata.',
+    str_contains($n, 'pedi') => 'Zdravstvena oskrba dojenčkov, otrok in mladostnikov.',
+    str_contains($n, 'zobo') => 'Preventiva in zdravljenje zob ter ustne votline.',
+    default => 'Specialistična obravnava in svetovanje.',
   };
 }
 
 $slikeSpecialnosti = [
   'Družinski zdravnik' => 'druzinski_zdravnik.jpg',
-  'Kardiolog'         => 'kardiolog.jpg',
-  'Nevrolog'          => 'nevrolog.jpg',
-  'Ortoped'           => 'ortoped.jpg',
-  'Zobozdravnik'      => 'zobozdravnik.jpg',
-  'Oftalmolog'        => 'oftalmolog.jpg',
-  'Ginekolog'         => 'ginekolog.jpg',
-  'Pediater'          => 'pediater.jpg',
+  'Kardiolog' => 'kardiolog.jpg',
+  'Nevrolog' => 'nevrolog.jpg',
+  'Ortoped' => 'ortoped.jpg',
+  'Zobozdravnik' => 'zobozdravnik.jpg',
+  'Oftalmolog' => 'oftalmolog.jpg',
+  'Ginekolog' => 'ginekolog.jpg',
+  'Pediater' => 'pediater.jpg',
 ];
 
 
@@ -90,6 +90,31 @@ $specialnosti = [];
 if ($rezultat) {
   while ($vrstica = $rezultat->fetch_assoc()) {
     $specialnosti[] = $vrstica;
+  }
+}
+
+$poizvedbaGraf = "
+  SELECT s.id_specializacija, s.naziv, COUNT(DISTINCT sz.TK_zdravnik) AS st
+  FROM specializacija s
+  LEFT JOIN specializacija_zdravnik sz
+    ON sz.TK_specializacija = s.id_specializacija
+  GROUP BY s.id_specializacija, s.naziv
+  ORDER BY s.naziv
+";
+
+
+$grafLabels = [];
+$grafValues = [];
+$rezGraf = $conn->query($poizvedbaGraf);
+if ($rezGraf) {
+  while ($r = $rezGraf->fetch_assoc()) {
+    $grafLabels[] = $r['naziv'];
+    $grafValues[] = (int)($r['st'] ?? 0);
+  }
+} else {
+  foreach ($specialnosti as $s) {
+    $grafLabels[] = $s['naziv'];
+    $grafValues[] = 0;
   }
 }
 ?>
@@ -151,30 +176,6 @@ if ($rezultat) {
       </div>
     </header>
 
-    <section class="hero">
-      <div class="hero-content">
-        <div class="hero-inner">
-          <div class="hero-text">
-            <h1>Diagnostični center blizu vas</h1>
-            <p>
-              Hitro najdite pravega zdravnika, specialistično ambulanto ali
-              diagnostični pregled. Vsi podatki na enem mestu, preverjeni in
-              ažurni.
-            </p>
-          </div>
-
-          <div class="hero-right hero-image">
-            <div class="doctor-bg"></div>
-            <img
-              src="img/hero-doctor.png"
-              alt="Zdravnica"
-              class="hero-doctor"
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-
 <main>
   <section class="spec-hero">
     <div class="spec-hero-inner">
@@ -183,7 +184,7 @@ if ($rezultat) {
     </div>
   </section>
 
-  <section class="spec-section">
+  <section class="spec-section">S
     <div class="spec-grid">
       <?php if (!$specialnosti): ?>
         <p>Trenutno ni specialnosti v bazi.</p>
@@ -263,6 +264,4 @@ document.addEventListener("DOMContentLoaded", () => {
   elementi.forEach(element => najdi.observe(element));
 });
 </script>
-
-
 </html>
