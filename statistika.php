@@ -76,6 +76,28 @@ function zvezdice(int $ocena): string {
   $ocena = max(1, min(5, $ocena));
   return str_repeat('★', $ocena) . str_repeat('☆', 5 - $ocena);
 }
+
+// graf: zdravniki po specialnosti
+$specLabels = [];
+$specCounts = [];
+
+$sqlSpec = "
+  SELECT s.naziv AS naziv, COUNT(sz.TK_zdravnik) AS st
+  FROM specializacija s
+  LEFT JOIN specializacija_zdravnik sz
+    ON sz.TK_specializacija = s.id_specializacija
+  GROUP BY s.id_specializacija, s.naziv
+  ORDER BY st DESC, s.naziv ASC
+";
+
+if ($res = $conn->query($sqlSpec)) {
+  while ($row = $res->fetch_assoc()) {
+    $specLabels[] = (string)$row['naziv'];
+    $specCounts[] = (int)$row['st'];
+  }
+  $res->free();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -249,12 +271,7 @@ function zvezdice(int $ocena): string {
       <div>
         <div class="card-box">
           <div class="card-head">
-            <div class="card-title">Uporabniki / Obiski / Ocene</div>
-            <div class="card-subtabs">
-              <span>Uporabniki</span>
-              <span>Obiski</span>
-              <span>Ocene</span>
-            </div>
+            <div class="card-title">Zdravniki</div>
           </div>
 
           <div class="card-body">
@@ -267,18 +284,18 @@ function zvezdice(int $ocena): string {
         <div class="charts-row">
           <div class="card-box">
             <div class="card-head">
-              <div class="card-title">Kategorije</div>
+              <div class="card-title">Specialnosti</div>
             </div>
             <div class="card-body">
-              <div class="chart-placeholder mini" aria-label="Prostor za graf">
-                graf
+              <div class="chart-placeholder mini chart-wrap">
+                <canvas id="specialnostiChart"></canvas>
               </div>
             </div>
           </div>
 
           <div class="card-box">
             <div class="card-head">
-              <div class="card-title">Obiski po mesecih</div>
+              <div class="card-title">Ustanove</div>
             </div>
             <div class="card-body">
               <div class="chart-placeholder mini" aria-label="Prostor za graf">
@@ -292,7 +309,7 @@ function zvezdice(int $ocena): string {
       <div style="display: grid; gap: 18px">
         <div class="card-box">
           <div class="card-head">
-            <div class="card-title">Pregled (npr. prihodki / obiski)</div>
+            <div class="card-title">Mesta</div>
           </div>
           <div class="card-body">
             <div class="chart-placeholder small" aria-label="Prostor za graf">
@@ -365,9 +382,36 @@ function zvezdice(int $ocena): string {
     </footer>
   </body>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  (function () {
+    const labels = <?= json_encode($specLabels, JSON_UNESCAPED_UNICODE) ?> || [];
+    const values = <?= json_encode($specCounts, JSON_UNESCAPED_UNICODE) ?> || [];
 
+    const canvas = document.getElementById('specialnostiChart');
+    if (!canvas || labels.length === 0) return;
+
+    new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Št. zdravnikov',
+          data: values,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: false,
+          title: { display: false }
+        }
+      }
+    });
+  })();
 </script>
+
 
 
 </html>

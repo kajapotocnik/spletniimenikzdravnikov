@@ -172,3 +172,13 @@
 .chart-placeholder.mini{
   height: 220px;
 }
+
+.chart-wrap{
+  display:block;
+  position: relative;
+  padding: 10px;
+}
+.chart-wrap canvas{
+  width: 100% !important;
+  height: 100% !important;
+}
