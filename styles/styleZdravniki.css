@@ -86,3 +86,10 @@
   margin: 18px auto 22px;
   background: rgba(148,163,184,.25);
 }
+
+.separator{
+  display: block;
+  width: min(760px, 92%);
+  height: 1px;
+  margin: 18px auto 22px;
+}

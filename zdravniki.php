@@ -125,12 +125,14 @@ function doctorImage(?string $dbUrl, int $id): string {
   <section class="spec-hero">
     <div class="spec-hero-inner">
       <div class="spec-kicker">NAŠI ZDRAVNIKI</div>
-      <h1>Širok nabor specialnosti <span>za tvoje zdravje</span></h1>
+      <h1>Poišči zdravnika <span>brez zapletov</span></h1>
     </div>
   </section>
 
+  <span class="separator"></span>
+
   <section class="search-modes">
-    <button class="mode-btn active" data-mode="spec">Iskanje po specializaciji</button>
+    <button class="mode-btn" data-mode="spec">Iskanje po specializaciji</button>
     <button class="mode-btn" data-mode="ime">Iskanje po imenu</button>
     <button class="mode-btn" data-mode="lokacija">Iskanje po lokaciji</button>
   </section>
@@ -139,7 +141,7 @@ function doctorImage(?string $dbUrl, int $id): string {
 
   <section class="doctor-tools">
 
-    <div id="toolSpec" class="tool-panel">
+    <div id="toolSpec" class="tool-panel skrito">
       <div class="doctor-filters">
         <button class="filter-btn active" data-filter="all">Vsi</button>
 
@@ -151,7 +153,7 @@ function doctorImage(?string $dbUrl, int $id): string {
       </div>
     </div>
 
-    <div id="toolIme" class="tool-panel" hidden>
+    <div id="toolIme" class="tool-panel skrito">
       <div class="search">
         <input
           type="text"
@@ -162,7 +164,7 @@ function doctorImage(?string $dbUrl, int $id): string {
       </div>
     </div>
 
-    <div id="toolLokacija" class="tool-panel" hidden>
+    <div id="toolLokacija" class="tool-panel skrito">
       <div class="location-placeholder">
         Iskanje po lokaciji bo dodano kasneje.
       </div>
@@ -329,8 +331,12 @@ function doctorImage(?string $dbUrl, int $id): string {
       });
     });
 
-    // privzeto prikaži specializacije
-    nastaviNacin("spec");
+    // vse skrito
+    panelSpec.classList.add("skrito");
+    panelIme.classList.add("skrito");
+    panelLok.classList.add("skrito");
+
+    gumbiNacina.forEach(g => g.classList.remove("active"));
 
     // klik na filter gumbe
     gumbiFilter.forEach((g) => {
