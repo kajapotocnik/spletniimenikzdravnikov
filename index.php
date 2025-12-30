@@ -112,6 +112,7 @@ if ($userIme !== '' || $userPriimek !== '') {
             <li><a href="zdravniki.php" class="nav-link">Poišči zdravnika</a></li>
             <li><a href="specialnosti.php" class="nav-link">Specialnosti</a></li>
             <li><a href="ustanove.php" class="nav-link">Zdravstvene ustanove</a></li>
+            <li><a href="statistika.php" class="nav-link">Statistika</a></li>
             <li><a href="kontakt.php" class="nav-link">Kontakt</a></li>
           </ul>
         </nav>

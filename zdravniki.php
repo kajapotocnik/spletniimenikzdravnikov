@@ -86,6 +86,7 @@ function doctorImage(?string $dbUrl, int $id): string {
             <li><a href="zdravniki.php" class="nav-link active">Poišči zdravnika</a></li>
             <li><a href="specialnosti.php" class="nav-link">Specialnosti</a></li>
             <li><a href="ustanove.php" class="nav-link">Zdravstvene ustanove</a></li>
+            <li><a href="statistika.php" class="nav-link">Statistika</a></li>
             <li><a href="kontakt.php" class="nav-link">Kontakt</a></li>
           </ul>
         </nav>
