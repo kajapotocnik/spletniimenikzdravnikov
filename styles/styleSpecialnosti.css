@@ -1,0 +1,147 @@
+:root{
+  --teal1: #1fbf9d;
+  --teal2: #00a6b5;
+  --dark:  #0d1634;
+}
+
+.spec-hero{
+  padding: 46px 0 10px;
+}
+
+.spec-hero-inner{
+  width: min(1200px, 90%);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.spec-kicker{
+  font-weight: 700;
+  letter-spacing: .14em;
+  font-size: 12px;
+  color: rgba(15, 23, 42, .55);
+  margin-bottom: 10px;
+}
+
+.spec-hero h1{
+  font-size: 34px;
+  line-height: 1.15;
+  margin-bottom: 10px;
+}
+
+.spec-hero h1 span{
+  color: #0e9f93;
+}
+
+.spec-hero p{
+  max-width: 720px;
+  margin: 0 auto;
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.7;
+}
+
+.spec-section{
+  padding: 30px 0 80px;
+}
+
+.spec-grid{
+  width: min(1200px, 90%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 26px;
+  align-items: stretch;
+}
+
+.spec-card{
+  background: rgba(255,255,255,.94);
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(148,163,184,.22);
+  box-shadow: 0 18px 55px rgba(15,23,42,.08);
+  transition: transform .16s ease, box-shadow .16s ease;
+  min-height: 320px;
+}
+
+.spec-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 26px 70px rgba(15,23,42,.12);
+}
+
+.spec-photo{
+  height: 120px;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(31,191,157,.22), transparent 60%),
+    radial-gradient(circle at 70% 60%, rgba(0,166,181,.18), transparent 62%),
+    linear-gradient(135deg, rgba(13,22,52,.10), rgba(0,166,181,.10));
+}
+
+.spec-body{
+  padding: 16px 18px 18px;
+  position: relative;
+}
+
+.spec-ico{
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--teal1), var(--teal2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 14px 32px rgba(31,191,157,.28);
+  margin-top: -34px; /* “plava” čez sliko */
+  border: 6px solid rgba(255,255,255,.95);
+}
+
+.spec-svg{
+  width: 24px;
+  height: 24px;
+  fill: #fff;
+}
+
+.spec-title{
+  margin: 12px 0 6px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.spec-desc{
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #64748b;
+  min-height: 44px;
+}
+
+.spec-link{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13px;
+  color: #0e9f93;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(15,118,110,.08);
+  transition: transform .16s ease, background .16s ease;
+}
+
+.spec-link:hover{
+  transform: translateX(2px);
+  background: rgba(15,118,110,.12);
+}
+
+.spec-ico .service-svg, .service-svg{
+  width: 24px;
+  height: 24px;
+  display: block;
+  color: #fff;
+  fill: currentColor;
+}
+
+.service-svg *{
+  fill: currentColor;
+}

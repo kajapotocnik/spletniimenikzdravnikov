@@ -42,14 +42,14 @@ if ($userIme !== '' || $userPriimek !== '') {
     </div>
 
     <nav>
-      <ul>
-        <li><a href="index.php" class="nav-link">Domov</a></li>
-        <li><a href="#" class="nav-link">Poišči zdravnika</a></li>
-        <li><a href="#" class="nav-link">Specialnosti</a></li>
-        <li><a href="#" class="nav-link">Mesta</a></li>
-        <li><a href="#" class="nav-link">Zdravstvene ustanove</a></li>
-        <li><a href="kontakt.php" class="nav-link active">Kontakt</a></li>
-      </ul>
+        <ul>
+          <li><a href="index.php" class="nav-link">Domov</a></li>
+          <li><a href="zdravniki.php" class="nav-link">Poišči zdravnika</a></li>
+          <li><a href="specialnosti.php" class="nav-link">Specialnosti</a></li>
+          <li><a href="mesta.php" class="nav-link">Mesta</a></li>
+          <li><a href="ustanove.php" class="nav-link">Zdravstvene ustanove</a></li>
+          <li><a href="kontakt.php" class="nav-link active">Kontakt</a></li>
+        </ul>
     </nav>
 
     <?php if (!$isLoggedIn): ?>
