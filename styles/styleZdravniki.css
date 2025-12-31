@@ -93,3 +93,30 @@
   height: 1px;
   margin: 18px auto 22px;
 }
+
+.location-tools{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.radius-wrap input{
+  width:80px;
+  padding:6px 10px;
+  border-radius:10px;
+  border:1px solid rgba(15,23,42,.15);
+}
+
+.geo-status{
+  font-size:13px;
+  color:#64748b;
+}
+
+.geo-map{
+  margin-top:12px;
+  height:340px;
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid rgba(15,23,42,.08);
+}

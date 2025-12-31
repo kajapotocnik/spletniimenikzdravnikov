@@ -169,7 +169,10 @@ if ($res = $conn->query($sqlZdr)) {
   <head>
     <meta charset="UTF-8" />
     <title>Spletni imenik zdravnikov</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles/styleIndex.css?v=5" />
     <link rel="stylesheet" href="styles/styleSpecialnosti.css?v=5" />
     <link rel="stylesheet" href="styles/styleStatistika.css?v=5" />
@@ -182,254 +185,300 @@ if ($res = $conn->query($sqlZdr)) {
         </div>
         <nav>
           <ul>
-            <li><a href="/spletniimenikzdravnikov/" class="nav-link">Domov</a></li>
-            <li><a href="/spletniimenikzdravnikov/zdravniki" class="nav-link">Poišči zdravnika</a></li>
-            <li><a href="/spletniimenikzdravnikov/specialnosti" class="nav-link">Specialnosti</a></li>
-            <li><a href="/spletniimenikzdravnikov/ustanove" class="nav-link">Zdravstvene ustanove</a></li>
-            <li><a href="/spletniimenikzdravnikov/statistika" class="nav-link active">Statistika</a></li>
-            <li><a href="/spletniimenikzdravnikov/kontakt" class="nav-link">Kontakt</a></li>
+            <li>
+              <a href="/spletniimenikzdravnikov/" class="nav-link">Domov</a>
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/zdravniki" class="nav-link"
+                >Poišči zdravnika</a
+              >
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/specialnosti" class="nav-link"
+                >Specialnosti</a
+              >
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/ustanove" class="nav-link"
+                >Zdravstvene ustanove</a
+              >
+            </li>
+            <li>
+              <a
+                href="/spletniimenikzdravnikov/statistika"
+                class="nav-link active"
+                >Statistika</a
+              >
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/kontakt" class="nav-link"
+                >Kontakt</a
+              >
+            </li>
           </ul>
         </nav>
-        
+
         <?php if (!$isLoggedIn): ?>
-          <a href="/spletniimenikzdravnikov/prijava" class="btn-nav">Prijava</a>
+        <a href="/spletniimenikzdravnikov/prijava" class="btn-nav">Prijava</a>
         <?php else: ?>
-          <div class="user-menu">
-            <button class="user-menu-trigger" type="button">
-              <span class="user-avatar"><?= htmlspecialchars($initials) ?></span>
-              <span class="user-name"><?= htmlspecialchars($userFullName) ?></span>
-              <span class="user-chevron">
-                <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-            </button>
+        <div class="user-menu">
+          <button class="user-menu-trigger" type="button">
+            <span class="user-avatar"><?= htmlspecialchars($initials) ?></span>
+            <span class="user-name"
+              ><?= htmlspecialchars($userFullName) ?></span
+            >
+            <span class="user-chevron">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M6 9l6 6 6-6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </button>
 
-            <div class="user-dropdown">
-              <?php if ($isDoctor): ?>
-                <a href="profil_zdravnik.php" class="user-dropdown-item">Moj profil</a>
-              <?php endif; ?>
+          <div class="user-dropdown">
+            <?php if ($isDoctor): ?>
+            <a href="profil_zdravnik.php" class="user-dropdown-item"
+              >Moj profil</a
+            >
+            <?php endif; ?>
 
-              <?php if (($_SESSION['user_vloga'] ?? '') === 'ADMIN'): ?>
-                <a href="admin_panel.php" class="user-dropdown-item">Admin plošča</a>
-              <?php endif; ?>
+            <?php if (($_SESSION['user_vloga'] ?? '') === 'ADMIN'): ?>
+            <a href="admin_panel.php" class="user-dropdown-item"
+              >Admin plošča</a
+            >
+            <?php endif; ?>
 
-              <a href="logout.php" class="user-dropdown-item">Odjava</a>
-            </div>
+            <a href="logout.php" class="user-dropdown-item">Odjava</a>
           </div>
+        </div>
         <?php endif; ?>
       </div>
     </header>
 
-<main>
-  <section class="spec-hero">
-    <div class="spec-hero-inner">
-      <div class="spec-kicker">NAŠA STATISTIKA</div>
-      <h1>Pregled podatkov <span>v imeniku</span></h1>
-    </div>
-  </section>
+    <main>
+      <section class="spec-hero">
+        <div class="spec-hero-inner">
+          <div class="spec-kicker">NAŠA STATISTIKA</div>
+          <h1>Pregled podatkov <span>v imeniku</span></h1>
+        </div>
+      </section>
 
-  <section class="dashboard">
-    <div class="stats-top">
-      <div class="stat-card">
-        <div class="stat-ico" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-            <circle
-              cx="9"
-              cy="7"
-              r="4"
-              stroke="currentColor"
-              stroke-width="2"
-            />
-            <path
-              d="M20 8v6"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-            <path
-              d="M23 11h-6"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-        </div>
-        <div class="stat-meta">
-          <div class="stat-label">Število zdravnikov</div>
-          <div class="stat-value"><?= (int)$stZdravnikov ?></div>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-ico" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"
-              stroke="currentColor"
-              stroke-width="2"
-            />
-            <path d="M14 3v6h6" stroke="currentColor" stroke-width="2" />
-            <path
-              d="M8 13h8"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-            <path
-              d="M8 17h5"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-        </div>
-        <div class="stat-meta">
-          <div class="stat-label">Število specializacij</div>
-          <div class="stat-value"><?= (int)$stSpecializacij ?></div>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-ico" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M3 21V7a2 2 0 0 1 2-2h6l2 2h6a2 2 0 0 1 2 2v12"
-              stroke="currentColor"
-              stroke-width="2"
-            />
-            <path
-              d="M7 21v-4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v4"
-              stroke="currentColor"
-              stroke-width="2"
-            />
-            <path
-              d="M12 11v2"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-            <path
-              d="M11 12h2"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-        </div>
-        <div class="stat-meta">
-          <div class="stat-label">Število ustanov</div>
-          <div class="stat-value"><?= (int)$stUstanov ?></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="dash-grid">
-      <div>
-        <div class="card-box">
-          <div class="card-head">
-            <div class="card-title">Povprečna ocena vsakega zdravnika</div>
+      <section class="dashboard">
+        <div class="stats-top">
+          <div class="stat-card">
+            <div class="stat-ico" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <circle
+                  cx="9"
+                  cy="7"
+                  r="4"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path
+                  d="M20 8v6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M23 11h-6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+            <div class="stat-meta">
+              <div class="stat-label">Število zdravnikov</div>
+              <div class="stat-value"><?= (int)$stZdravnikov ?></div>
+            </div>
           </div>
-          <div class="card-body">
-            <div class="chart-placeholder mini chart-wrap">
-                <canvas id="zdravnikiChart"></canvas>
+
+          <div class="stat-card">
+            <div class="stat-ico" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path d="M14 3v6h6" stroke="currentColor" stroke-width="2" />
+                <path
+                  d="M8 13h8"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M8 17h5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+            <div class="stat-meta">
+              <div class="stat-label">Število specializacij</div>
+              <div class="stat-value"><?= (int)$stSpecializacij ?></div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-ico" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M3 21V7a2 2 0 0 1 2-2h6l2 2h6a2 2 0 0 1 2 2v12"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path
+                  d="M7 21v-4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v4"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path
+                  d="M12 11v2"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M11 12h2"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+            <div class="stat-meta">
+              <div class="stat-label">Število ustanov</div>
+              <div class="stat-value"><?= (int)$stUstanov ?></div>
             </div>
           </div>
         </div>
 
-        <div class="charts-row">
-          <div class="card-box">
-            <div class="card-head">
-              <div class="card-title">Specialnosti</div>
+        <div class="dash-grid">
+          <div>
+            <div class="card-box">
+              <div class="card-head">
+                <div class="card-title">Povprečna ocena vsakega zdravnika</div>
+              </div>
+              <div class="card-body">
+                <div class="chart-placeholder mini chart-wrap">
+                  <canvas id="zdravnikiChart"></canvas>
+                </div>
+              </div>
             </div>
-            <div class="card-body">
-              <div class="chart-placeholder mini chart-wrap">
-                <canvas id="specialnostiChart"></canvas>
+
+            <div class="charts-row">
+              <div class="card-box">
+                <div class="card-head">
+                  <div class="card-title">Specialnosti</div>
+                </div>
+                <div class="card-body">
+                  <div class="chart-placeholder mini chart-wrap">
+                    <canvas id="specialnostiChart"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-box">
+                <div class="card-head">
+                  <div class="card-title">Ustanove</div>
+                </div>
+                <div class="card-body">
+                  <div class="chart-placeholder mini chart-wrap">
+                    <canvas id="ustanoveChart"></canvas>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="card-box">
-            <div class="card-head">
-              <div class="card-title">Ustanove</div>
-            </div>
-            <div class="card-body">
-              <div class="chart-placeholder mini chart-wrap">
-                <canvas id="ustanoveChart"></canvas>
+          <div style="display: grid; gap: 18px">
+            <div class="card-box">
+              <div class="card-head">
+                <div class="card-title">Mesta</div>
+              </div>
+              <div class="card-body">
+                <div class="chart-placeholder mini chart-wrap">
+                  <canvas id="mestaChart"></canvas>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div style="display: grid; gap: 18px">
-        <div class="card-box">
-          <div class="card-head">
-            <div class="card-title">Mesta</div>
-          </div>
-          <div class="card-body">
-            <div class="chart-placeholder mini chart-wrap">
-                <canvas id="mestaChart"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-box">
-          <div class="card-head">
-            <div class="card-title">Zadnje ocene in mnenja</div>
-          </div>
-          <div class="card-body">
-            <?php
+            <div class="card-box">
+              <div class="card-head">
+                <div class="card-title">Zadnje ocene in mnenja</div>
+              </div>
+              <div class="card-body">
+                <?php
                     // samo zadnje 3 ocene
                     $zadnjeOcene = array_slice($ocene, -3);
                     ?>
 
-            <?php if (empty($zadnjeOcene)): ?>
-            <div style="color: #64748b; font-size: 13px">Trenutno ni ocen.</div>
-            <?php else: ?>
-            <div class="reviews-list">
-              <?php foreach ($zadnjeOcene as $o): ?>
-              <?php
+                <?php if (empty($zadnjeOcene)): ?>
+                <div style="color: #64748b; font-size: 13px">
+                  Trenutno ni ocen.
+                </div>
+                <?php else: ?>
+                <div class="reviews-list">
+                  <?php foreach ($zadnjeOcene as $o): ?>
+                  <?php
                             $ime = trim(($o['uporabnik_ime'] ?? '') . ' ' . ($o['uporabnik_priimek'] ?? ''));
                             $doc = trim(($o['zdravnik_ime'] ?? '') . ' ' . ($o['zdravnik_priimek'] ?? ''));
                             $komentar = trim((string)($o['komentar'] ?? ''));
                             if ($komentar === '') $komentar = 'Brez komentarja.';
                         ?>
-              <div class="review-item">
-                <div class="review-top">
-                  <div class="review-name">
-                    <?= htmlspecialchars($ime !== '' ? $ime : 'Uporabnik') ?>
+                  <div class="review-item">
+                    <div class="review-top">
+                      <div class="review-name">
+                        <?= htmlspecialchars($ime !== '' ? $ime : 'Uporabnik') ?>
+                      </div>
+                      <div
+                        class="review-stars"
+                        title="<?= (int)$o['ocena'] ?>/5"
+                      >
+                        <?= htmlspecialchars(zvezdice((int)$o['ocena'])) ?>
+                      </div>
+                    </div>
+                    <div class="review-text">
+                      <?= htmlspecialchars($komentar) ?>
+                    </div>
+                    <div class="review-doc">
+                      Za zdravnika:
+                      <strong
+                        ><?= htmlspecialchars($doc !== '' ? $doc : '—') ?></strong
+                      >
+                    </div>
                   </div>
-                  <div class="review-stars" title="<?= (int)$o['ocena'] ?>/5">
-                    <?= htmlspecialchars(zvezdice((int)$o['ocena'])) ?>
-                  </div>
+                  <?php endforeach; ?>
                 </div>
-                <div class="review-text">
-                  <?= htmlspecialchars($komentar) ?>
-                </div>
-                <div class="review-doc">
-                  Za zdravnika:
-                  <strong
-                    ><?= htmlspecialchars($doc !== '' ? $doc : '—') ?></strong
-                  >
-                </div>
+                <?php endif; ?>
               </div>
-              <?php endforeach; ?>
             </div>
-            <?php endif; ?>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-</main>
+      </section>
+    </main>
 
     <footer>
       <div class="container">
@@ -445,162 +494,161 @@ if ($res = $conn->query($sqlZdr)) {
     </footer>
   </body>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  (function () {
-    const labels = <?= json_encode($specLabels, JSON_UNESCAPED_UNICODE) ?> || [];
-    const values = <?= json_encode($specCounts, JSON_UNESCAPED_UNICODE) ?> || [];
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    (function () {
+      const labels = <?= json_encode($specLabels, JSON_UNESCAPED_UNICODE) ?> || [];
+      const values = <?= json_encode($specCounts, JSON_UNESCAPED_UNICODE) ?> || [];
 
-    const canvas = document.getElementById('specialnostiChart');
-    if (!canvas || labels.length === 0) return;
+      const canvas = document.getElementById('specialnostiChart');
+      if (!canvas || labels.length === 0) return;
 
-    new Chart(canvas, {
-      type: 'doughnut',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Št. zdravnikov',
-          data: values,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: false,
-          title: { display: false }
-        }
-      }
-    });
-  })();
-</script>
-
-<script>
-  (function () {
-    const labels = <?= json_encode($ustLabels, JSON_UNESCAPED_UNICODE) ?> || [];
-    const values = <?= json_encode($ustCounts, JSON_UNESCAPED_UNICODE) ?> || [];
-
-    const canvas = document.getElementById('ustanoveChart');
-    const wrap = canvas?.closest('.chart-wrap');
-
-    if (!canvas || labels.length === 0) {
-      if (wrap) wrap.innerHTML = '<div style="padding:12px;color:#64748b;font-size:13px">Ni podatkov za prikaz grafa.</div>';
-      return;
-    }
-
-    new Chart(canvas, {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Št. zdravnikov',
-          data: values,
-          borderWidth: 2,
-          borderRadius: Number.MAX_VALUE,
-          borderSkipped: false
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: false,
-          title: { display: false}
-        },
-        scales: {
-          y: { beginAtZero: true, ticks: { precision: 0 } }
-        }
-      }
-    });
-  })();
-</script>
-
-<script>
-  (function () {
-    const labels = <?= json_encode($mestaLabels, JSON_UNESCAPED_UNICODE) ?> || [];
-    const values = <?= json_encode($mestaCounts, JSON_UNESCAPED_UNICODE) ?> || [];
-
-    const canvas = document.getElementById('mestaChart');
-    const wrap = canvas?.closest('.chart-wrap');
-
-    if (!canvas || labels.length === 0) {
-      if (wrap) wrap.innerHTML = '<div style="padding:12px;color:#64748b;font-size:13px">Ni podatkov za prikaz grafa.</div>';
-      return;
-    }
-
-    new Chart(canvas, {
-      type: 'radar',
-      data: {
-        labels,
-        datasets: [
-        {
+      new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Št. zdravnikov',
             data: values,
-            fill: true
-        }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          title: { display: false}
+          }]
         },
-        scales: {
-          r: {
-            beginAtZero: true,
-            ticks: { display: false }
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: false,
+            title: { display: false }
           }
         }
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const labels = <?= json_encode($ustLabels, JSON_UNESCAPED_UNICODE) ?> || [];
+      const values = <?= json_encode($ustCounts, JSON_UNESCAPED_UNICODE) ?> || [];
+
+      const canvas = document.getElementById('ustanoveChart');
+      const wrap = canvas?.closest('.chart-wrap');
+
+      if (!canvas || labels.length === 0) {
+        if (wrap) wrap.innerHTML = '<div style="padding:12px;color:#64748b;font-size:13px">Ni podatkov za prikaz grafa.</div>';
+        return;
       }
-    });
-  })();
-</script>
 
-<script>
-  (function () {
-    const labels = <?= json_encode($zdrLabels, JSON_UNESCAPED_UNICODE) ?> || [];
-    const values = <?= json_encode($zdrAvg, JSON_UNESCAPED_UNICODE) ?> || [];
-
-    const canvas = document.getElementById('zdravnikiChart');
-    const wrap = canvas?.closest('.chart-wrap');
-
-    if (!canvas || labels.length === 0) {
-      if (wrap) wrap.innerHTML = '<div style="padding:12px;color:#64748b;font-size:13px">Ni podatkov za prikaz grafa.</div>';
-      return;
-    }
-
-    new Chart(canvas, {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Povprečna ocena',
-          data: values,
-          tension: 0.3,
-          fill: true,
-          pointRadius: 3
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          title: { display: false }
+      new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Št. zdravnikov',
+            data: values,
+            borderWidth: 2,
+            borderRadius: Number.MAX_VALUE,
+            borderSkipped: false
+          }]
         },
-        scales: {
-          y: {
-            beginAtZero: true,
-            min: 0,
-            max: 5,
-            ticks: { stepSize: 1 }
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: false,
+            title: { display: false}
+          },
+          scales: {
+            y: { beginAtZero: true, ticks: { precision: 0 } }
           }
         }
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const labels = <?= json_encode($mestaLabels, JSON_UNESCAPED_UNICODE) ?> || [];
+      const values = <?= json_encode($mestaCounts, JSON_UNESCAPED_UNICODE) ?> || [];
+
+      const canvas = document.getElementById('mestaChart');
+      const wrap = canvas?.closest('.chart-wrap');
+
+      if (!canvas || labels.length === 0) {
+        if (wrap) wrap.innerHTML = '<div style="padding:12px;color:#64748b;font-size:13px">Ni podatkov za prikaz grafa.</div>';
+        return;
       }
-    });
-  })();
-</script>
 
+      new Chart(canvas, {
+        type: 'radar',
+        data: {
+          labels,
+          datasets: [
+          {
+              data: values,
+              fill: true
+          }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            title: { display: false}
+          },
+          scales: {
+            r: {
+              beginAtZero: true,
+              ticks: { display: false }
+            }
+          }
+        }
+      });
+    })();
+  </script>
 
+  <script>
+    (function () {
+      const labels = <?= json_encode($zdrLabels, JSON_UNESCAPED_UNICODE) ?> || [];
+      const values = <?= json_encode($zdrAvg, JSON_UNESCAPED_UNICODE) ?> || [];
+
+      const canvas = document.getElementById('zdravnikiChart');
+      const wrap = canvas?.closest('.chart-wrap');
+
+      if (!canvas || labels.length === 0) {
+        if (wrap) wrap.innerHTML = '<div style="padding:12px;color:#64748b;font-size:13px">Ni podatkov za prikaz grafa.</div>';
+        return;
+      }
+
+      new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Povprečna ocena',
+            data: values,
+            tension: 0.3,
+            fill: true,
+            pointRadius: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            title: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              min: 0,
+              max: 5,
+              ticks: { stepSize: 1 }
+            }
+          }
+        }
+      });
+    })();
+  </script>
 </html>
+

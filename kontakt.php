@@ -21,8 +21,7 @@ if ($userIme !== '' || $userPriimek !== '') {
 }
 ?>
 
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="sl">
 <head>
   <meta charset="utf-8" />

@@ -109,7 +109,10 @@ $poizvedbaGraf = "
   <head>
     <meta charset="UTF-8" />
     <title>Spletni imenik zdravnikov</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles/styleIndex.css?v=5" />
     <link rel="stylesheet" href="styles/styleSpecialnosti.css?v=5" />
   </head>
@@ -121,84 +124,135 @@ $poizvedbaGraf = "
         </div>
         <nav>
           <ul>
-            <li><a href="/spletniimenikzdravnikov/" class="nav-link">Domov</a></li>
-            <li><a href="/spletniimenikzdravnikov/zdravniki" class="nav-link">Poišči zdravnika</a></li>
-            <li><a href="/spletniimenikzdravnikov/specialnosti" class="nav-link active">Specialnosti</a></li>
-            <li><a href="/spletniimenikzdravnikov/ustanove" class="nav-link">Zdravstvene ustanove</a></li>
-            <li><a href="/spletniimenikzdravnikov/statistika" class="nav-link">Statistika</a></li>
-            <li><a href="/spletniimenikzdravnikov/kontakt" class="nav-link">Kontakt</a></li>
+            <li>
+              <a href="/spletniimenikzdravnikov/" class="nav-link">Domov</a>
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/zdravniki" class="nav-link"
+                >Poišči zdravnika</a
+              >
+            </li>
+            <li>
+              <a
+                href="/spletniimenikzdravnikov/specialnosti"
+                class="nav-link active"
+                >Specialnosti</a
+              >
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/ustanove" class="nav-link"
+                >Zdravstvene ustanove</a
+              >
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/statistika" class="nav-link"
+                >Statistika</a
+              >
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/kontakt" class="nav-link"
+                >Kontakt</a
+              >
+            </li>
           </ul>
         </nav>
-        
+
         <?php if (!$isLoggedIn): ?>
-          <a href="/spletniimenikzdravnikov/prijava" class="btn-nav">Prijava</a>
+        <a href="/spletniimenikzdravnikov/prijava" class="btn-nav">Prijava</a>
         <?php else: ?>
-          <div class="user-menu">
-            <button class="user-menu-trigger" type="button">
-              <span class="user-avatar"><?= htmlspecialchars($initials) ?></span>
-              <span class="user-name"><?= htmlspecialchars($userFullName) ?></span>
-              <span class="user-chevron">
-                <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-            </button>
+        <div class="user-menu">
+          <button class="user-menu-trigger" type="button">
+            <span class="user-avatar"><?= htmlspecialchars($initials) ?></span>
+            <span class="user-name"
+              ><?= htmlspecialchars($userFullName) ?></span
+            >
+            <span class="user-chevron">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M6 9l6 6 6-6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </button>
 
-            <div class="user-dropdown">
-              <?php if ($isDoctor): ?>
-                <a href="profil_zdravnik.php" class="user-dropdown-item">Moj profil</a>
-              <?php endif; ?>
+          <div class="user-dropdown">
+            <?php if ($isDoctor): ?>
+            <a href="profil_zdravnik.php" class="user-dropdown-item"
+              >Moj profil</a
+            >
+            <?php endif; ?>
 
-              <?php if (($_SESSION['user_vloga'] ?? '') === 'ADMIN'): ?>
-                <a href="admin_panel.php" class="user-dropdown-item">Admin plošča</a>
-              <?php endif; ?>
+            <?php if (($_SESSION['user_vloga'] ?? '') === 'ADMIN'): ?>
+            <a href="admin_panel.php" class="user-dropdown-item"
+              >Admin plošča</a
+            >
+            <?php endif; ?>
 
-              <a href="logout.php" class="user-dropdown-item">Odjava</a>
-            </div>
+            <a href="logout.php" class="user-dropdown-item">Odjava</a>
           </div>
+        </div>
         <?php endif; ?>
       </div>
     </header>
 
-<main>
-  <section class="spec-hero">
-    <div class="spec-hero-inner">
-      <div class="spec-kicker">NAŠE SPECIALNOSTI</div>
-      <h1>Širok nabor specialnosti <span>za tvoje zdravje</span></h1>
-    </div>
-  </section>
+    <main>
+      <section class="spec-hero">
+        <div class="spec-hero-inner">
+          <div class="spec-kicker">NAŠE SPECIALNOSTI</div>
+          <h1>Širok nabor specialnosti <span>za tvoje zdravje</span></h1>
+        </div>
+      </section>
 
-  <section class="spec-section">
-    <div class="spec-grid">
-      <?php if (!$specialnosti): ?>
-        <p>Trenutno ni specialnosti v bazi.</p>
-      <?php endif; ?>
+      <section class="spec-section">
+        <div class="spec-grid">
+          <?php if (!$specialnosti): ?>
+          <p>Trenutno ni specialnosti v bazi.</p>
+          <?php endif; ?>
 
-      <?php foreach ($specialnosti as $specialnost): ?>
-        <article class="spec-card">
-          <?php
+          <?php foreach ($specialnosti as $specialnost): ?>
+          <article class="spec-card">
+            <?php
             $file = $slikeSpecialnosti[$specialnost['naziv']] ?? 'default.jpg';
             $imgPath = 'img/specialnosti/' . $file; ?>
-            <div class="spec-photo lazy-bg" data-bg="<?= htmlspecialchars($imgPath) ?>"></div>
+            <div
+              class="spec-photo lazy-bg"
+              data-bg="<?= htmlspecialchars($imgPath) ?>"
+            ></div>
 
-          <div class="spec-body">
-            <div class="spec-ico">
-              <?= ikonaSpecialnosti($specialnost['naziv']) ?>
+            <div class="spec-body">
+              <div class="spec-ico">
+                <?= ikonaSpecialnosti($specialnost['naziv']) ?>
+              </div>
+
+              <h3 class="spec-title">
+                <?= htmlspecialchars($specialnost['naziv']) ?>
+              </h3>
+              <p class="spec-desc">
+                <?= htmlspecialchars(opisSpecialnosti($specialnost['naziv'])) ?>
+              </p>
+
+              <a
+                class="read-more-btn"
+                href="zdravniki.php?specializacija=<?= urlencode($specialnost['naziv']) ?>"
+              >
+                Poglej zdravnike
+              </a>
             </div>
-
-            <h3 class="spec-title"><?= htmlspecialchars($specialnost['naziv']) ?></h3>
-            <p class="spec-desc"><?= htmlspecialchars(opisSpecialnosti($specialnost['naziv'])) ?></p>
-
-            <a class="read-more-btn" href="zdravniki.php?specializacija=<?= urlencode($specialnost['naziv']) ?>">
-              Poglej zdravnike
-            </a>
-          </div>
-        </article>
-      <?php endforeach; ?>
-    </div>
-  </section>
-</main>
+          </article>
+          <?php endforeach; ?>
+        </div>
+      </section>
+    </main>
 
     <footer>
       <div class="container">
@@ -214,39 +268,44 @@ $poizvedbaGraf = "
     </footer>
   </body>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const elementi = document.querySelectorAll(".lazy-bg");
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const elementi = document.querySelectorAll(".lazy-bg");
 
-  if (!("IntersectionObserver" in window)) { //če ne podpira IntersectionObserver
-    // slike se naložijo brez lazy loading
-    elementi.forEach(element => {
-      element.style.backgroundImage = `url('${element.dataset.bg}')`;
-      element.classList.remove("lazy-bg");
+      if (!("IntersectionObserver" in window)) {
+        //če ne podpira IntersectionObserver
+        // slike se naložijo brez lazy loading
+        elementi.forEach((element) => {
+          element.style.backgroundImage = `url('${element.dataset.bg}')`;
+          element.classList.remove("lazy-bg");
+        });
+        return;
+      }
+
+      // vidno
+      const najdi = new IntersectionObserver(
+        (vnosi, obs) => {
+          vnosi.forEach((vnos) => {
+            if (!vnos.isIntersecting) return;
+
+            const element = vnos.target;
+            const src = element.dataset.bg;
+
+            // data-bg
+            if (src) element.style.backgroundImage = `url('${src}')`;
+
+            // odstrani lazy-bg
+            element.classList.remove("lazy-bg");
+            obs.unobserve(element);
+          });
+        },
+        {
+          rootMargin: "200px 0px", //je 200px preden je vidna
+        }
+      );
+
+      elementi.forEach((element) => najdi.observe(element));
     });
-    return;
-  }
-
-  // vidno
-  const najdi = new IntersectionObserver((vnosi, obs) => {
-    vnosi.forEach(vnos => {
-      if (!vnos.isIntersecting) return;
-
-      const element = vnos.target;
-      const src = element.dataset.bg;
-
-      // data-bg
-      if (src) element.style.backgroundImage = `url('${src}')`;
-
-      // odstrani lazy-bg
-      element.classList.remove("lazy-bg");
-      obs.unobserve(element);
-    });
-  }, { 
-    rootMargin: "200px 0px" //je 200px preden je vidna
-  });
-
-  elementi.forEach(element => najdi.observe(element));
-});
-</script>
+  </script>
 </html>
+

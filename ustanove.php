@@ -96,7 +96,10 @@ $opisiUstanov = [
   <head>
     <meta charset="UTF-8" />
     <title>Spletni imenik zdravnikov</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles/styleIndex.css?v=5" />
     <link rel="stylesheet" href="styles/styleSpecialnosti.css?v=5" />
     <link rel="stylesheet" href="styles/styleUstanove.css?v=5" />
@@ -109,70 +112,110 @@ $opisiUstanov = [
         </div>
         <nav>
           <ul>
-            <li><a href="/spletniimenikzdravnikov/" class="nav-link">Domov</a></li>
-            <li><a href="/spletniimenikzdravnikov/zdravniki" class="nav-link">Poišči zdravnika</a></li>
-            <li><a href="/spletniimenikzdravnikov/specialnosti" class="nav-link">Specialnosti</a></li>
-            <li><a href="/spletniimenikzdravnikov/ustanove" class="nav-link active">Zdravstvene ustanove</a></li>
-            <li><a href="/spletniimenikzdravnikov/statistika" class="nav-link">Statistika</a></li>
-            <li><a href="/spletniimenikzdravnikov/kontakt" class="nav-link">Kontakt</a></li>
+            <li>
+              <a href="/spletniimenikzdravnikov/" class="nav-link">Domov</a>
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/zdravniki" class="nav-link"
+                >Poišči zdravnika</a
+              >
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/specialnosti" class="nav-link"
+                >Specialnosti</a
+              >
+            </li>
+            <li>
+              <a
+                href="/spletniimenikzdravnikov/ustanove"
+                class="nav-link active"
+                >Zdravstvene ustanove</a
+              >
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/statistika" class="nav-link"
+                >Statistika</a
+              >
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/kontakt" class="nav-link"
+                >Kontakt</a
+              >
+            </li>
           </ul>
         </nav>
-        
+
         <?php if (!$isLoggedIn): ?>
-          <a href="/spletniimenikzdravnikov/prijava" class="btn-nav">Prijava</a>
+        <a href="/spletniimenikzdravnikov/prijava" class="btn-nav">Prijava</a>
         <?php else: ?>
-          <div class="user-menu">
-            <button class="user-menu-trigger" type="button">
-              <span class="user-avatar"><?= htmlspecialchars($initials) ?></span>
-              <span class="user-name"><?= htmlspecialchars($userFullName) ?></span>
-              <span class="user-chevron">
-                <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-            </button>
+        <div class="user-menu">
+          <button class="user-menu-trigger" type="button">
+            <span class="user-avatar"><?= htmlspecialchars($initials) ?></span>
+            <span class="user-name"
+              ><?= htmlspecialchars($userFullName) ?></span
+            >
+            <span class="user-chevron">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M6 9l6 6 6-6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </button>
 
-            <div class="user-dropdown">
-              <?php if ($isDoctor): ?>
-                <a href="profil_zdravnik.php" class="user-dropdown-item">Moj profil</a>
-              <?php endif; ?>
+          <div class="user-dropdown">
+            <?php if ($isDoctor): ?>
+            <a href="profil_zdravnik.php" class="user-dropdown-item"
+              >Moj profil</a
+            >
+            <?php endif; ?>
 
-              <?php if (($_SESSION['user_vloga'] ?? '') === 'ADMIN'): ?>
-                <a href="admin_panel.php" class="user-dropdown-item">Admin plošča</a>
-              <?php endif; ?>
+            <?php if (($_SESSION['user_vloga'] ?? '') === 'ADMIN'): ?>
+            <a href="admin_panel.php" class="user-dropdown-item"
+              >Admin plošča</a
+            >
+            <?php endif; ?>
 
-              <a href="logout.php" class="user-dropdown-item">Odjava</a>
-            </div>
+            <a href="logout.php" class="user-dropdown-item">Odjava</a>
           </div>
+        </div>
         <?php endif; ?>
       </div>
     </header>
 
-<main>
-<section class="spec-hero">
-    <div class="spec-hero-inner">
-      <div class="spec-kicker">ZDRAVSTVENE USTANOVE</div>
-      <h1>Seznam vseh <span> klinik in bolnišnic</span></h1>
-    </div>
-  </section>
-
-   <section class="ustanove-wrap">
-
-    <?php if (empty($ustanove)): ?>
-      <div class="ustanova-card">
-        <div class="ustanova-right">
-          <h2 class="ustanova-title">Ni podatkov</h2>
-          <p class="ustanova-desc">
-            Trenutno v sistemu ni vpisanih zdravstvenih ustanov.
-          </p>
+    <main>
+      <section class="spec-hero">
+        <div class="spec-hero-inner">
+          <div class="spec-kicker">ZDRAVSTVENE USTANOVE</div>
+          <h1>Seznam vseh <span> klinik in bolnišnic</span></h1>
         </div>
-      </div>
+      </section>
 
-    <?php else: ?>
-      <?php foreach ($ustanove as $u): ?>
+      <section class="ustanove-wrap">
+        <?php if (empty($ustanove)): ?>
         <div class="ustanova-card">
-            <?php
+          <div class="ustanova-right">
+            <h2 class="ustanova-title">Ni podatkov</h2>
+            <p class="ustanova-desc">
+              Trenutno v sistemu ni vpisanih zdravstvenih ustanov.
+            </p>
+          </div>
+        </div>
+
+        <?php else: ?>
+        <?php foreach ($ustanove as $u): ?>
+        <div class="ustanova-card">
+          <?php
             $imeUstanove = $u['klinika'];
 
             if (isset($slikeUstanov[$imeUstanove])) {
@@ -181,9 +224,11 @@ $opisiUstanov = [
                 $imgPath = 'img/ustanove/default.jpg';
             }
             ?>
-            <div class="ustanova-left">
-            <div class="ustanova-photo lazy-bg" data-bg="<?= htmlspecialchars($imgPath) ?>">
-            </div>
+          <div class="ustanova-left">
+            <div
+              class="ustanova-photo lazy-bg"
+              data-bg="<?= htmlspecialchars($imgPath) ?>"
+            ></div>
 
             <div class="ustanova-mini">
               <div class="mini-top">
@@ -193,8 +238,10 @@ $opisiUstanov = [
               </div>
 
               <div class="mini-from">
-                LOKACIJA<br>
-                <span><?= htmlspecialchars($u['mesta'] ?: 'ni podatka') ?></span>
+                LOKACIJA<br />
+                <span
+                  ><?= htmlspecialchars($u['mesta'] ?: 'ni podatka') ?></span
+                >
               </div>
             </div>
           </div>
@@ -212,7 +259,7 @@ $opisiUstanov = [
             $opis = $opisiUstanov[$imeUstanove]
                 ?? 'Združujemo strokovno medicinsko znanje, sodobno tehnologijo ter celostni pristop, osredotočen na pacienta.';
             ?>
-            <p class="ustanova-desc"> <?= htmlspecialchars($opis) ?> </p>
+            <p class="ustanova-desc"><?= htmlspecialchars($opis) ?></p>
 
             <div class="ustanova-actions">
               <a href="#" class="read-more-btnn">Več informacij</a>
@@ -227,13 +274,11 @@ $opisiUstanov = [
               </div>
             </div>
           </div>
-
         </div>
-      <?php endforeach; ?>
-    <?php endif; ?>
-
-  </section>
-</main>
+        <?php endforeach; ?>
+        <?php endif; ?>
+      </section>
+    </main>
 
     <footer>
       <div class="container">
@@ -249,41 +294,44 @@ $opisiUstanov = [
     </footer>
   </body>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const elementi = document.querySelectorAll(".lazy-bg");
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const elementi = document.querySelectorAll(".lazy-bg");
 
-  if (!("IntersectionObserver" in window)) { //če ne podpira IntersectionObserver
-    // slike se naložijo brez lazy loading
-    elementi.forEach(element => {
-      element.style.backgroundImage = `url('${element.dataset.bg}')`;
-      element.classList.remove("lazy-bg");
+      if (!("IntersectionObserver" in window)) {
+        //če ne podpira IntersectionObserver
+        // slike se naložijo brez lazy loading
+        elementi.forEach((element) => {
+          element.style.backgroundImage = `url('${element.dataset.bg}')`;
+          element.classList.remove("lazy-bg");
+        });
+        return;
+      }
+
+      // vidno
+      const najdi = new IntersectionObserver(
+        (vnosi, obs) => {
+          vnosi.forEach((vnos) => {
+            if (!vnos.isIntersecting) return;
+
+            const element = vnos.target;
+            const src = element.dataset.bg;
+
+            // data-bg
+            if (src) element.style.backgroundImage = `url('${src}')`;
+
+            // odstrani lazy-bg
+            element.classList.remove("lazy-bg");
+            obs.unobserve(element);
+          });
+        },
+        {
+          rootMargin: "200px 0px", //je 200px preden je vidna
+        }
+      );
+
+      elementi.forEach((element) => najdi.observe(element));
     });
-    return;
-  }
-
-  // vidno
-  const najdi = new IntersectionObserver((vnosi, obs) => {
-    vnosi.forEach(vnos => {
-      if (!vnos.isIntersecting) return;
-
-      const element = vnos.target;
-      const src = element.dataset.bg;
-
-      // data-bg
-      if (src) element.style.backgroundImage = `url('${src}')`;
-
-      // odstrani lazy-bg
-      element.classList.remove("lazy-bg");
-      obs.unobserve(element);
-    });
-  }, { 
-    rootMargin: "200px 0px" //je 200px preden je vidna
-  });
-
-  elementi.forEach(element => najdi.observe(element));
-});
-</script>
-
-
+  </script>
 </html>
+

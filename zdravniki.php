@@ -28,14 +28,24 @@ SELECT
   GROUP_CONCAT(DISTINCT s.naziv ORDER BY s.naziv SEPARATOR ', ') AS specializacije,
   ROUND(AVG(o.ocena), 1)  AS povprecje_ocen,
   COUNT(o.ocena) AS st_ocen,
-  d.slika_url
+  d.slika_url,
+  d.latitude,
+  d.longitude
 FROM zdravnik d
 JOIN uporabnik u ON u.id_uporabnik = d.TK_uporabnik
 LEFT JOIN ocene o ON o.TK_zdravnik = d.id_zdravnik
 LEFT JOIN specializacija_zdravnik sz ON sz.TK_zdravnik = d.id_zdravnik
 LEFT JOIN specializacija s ON s.id_specializacija = sz.TK_specializacija
-GROUP BY d.id_zdravnik, u.ime, u.priimek, d.slika_url
+GROUP BY
+  d.id_zdravnik,
+  u.id_uporabnik,
+  u.ime,
+  u.priimek,
+  d.slika_url,
+  d.latitude,
+  d.longitude
 ORDER BY u.priimek, u.ime
+
 ";
 
 // za specializacije
@@ -73,10 +83,17 @@ if (!function_exists('doctorImage')) {
   <head>
     <meta charset="UTF-8" />
     <title>Spletni imenik zdravnikov</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles/styleIndex.css?v=5" />
     <link rel="stylesheet" href="styles/styleSpecialnosti.css?v=5" />
     <link rel="stylesheet" href="styles/styleZdravniki.css?v=5" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
   </head>
   <body>
     <header class="navbar">
@@ -86,112 +103,169 @@ if (!function_exists('doctorImage')) {
         </div>
         <nav>
           <ul>
-            <li><a href="/spletniimenikzdravnikov/" class="nav-link">Domov</a></li>
-            <li><a href="/spletniimenikzdravnikov/zdravniki" class="nav-link active">Poišči zdravnika</a></li>
-            <li><a href="/spletniimenikzdravnikov/specialnosti" class="nav-link">Specialnosti</a></li>
-            <li><a href="/spletniimenikzdravnikov/ustanove" class="nav-link">Zdravstvene ustanove</a></li>
-            <li><a href="/spletniimenikzdravnikov/statistika" class="nav-link">Statistika</a></li>
-            <li><a href="/spletniimenikzdravnikov/kontakt" class="nav-link">Kontakt</a></li>
+            <li>
+              <a href="/spletniimenikzdravnikov/" class="nav-link">Domov</a>
+            </li>
+            <li>
+              <a
+                href="/spletniimenikzdravnikov/zdravniki"
+                class="nav-link active"
+                >Poišči zdravnika</a
+              >
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/specialnosti" class="nav-link"
+                >Specialnosti</a
+              >
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/ustanove" class="nav-link"
+                >Zdravstvene ustanove</a
+              >
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/statistika" class="nav-link"
+                >Statistika</a
+              >
+            </li>
+            <li>
+              <a href="/spletniimenikzdravnikov/kontakt" class="nav-link"
+                >Kontakt</a
+              >
+            </li>
           </ul>
         </nav>
-        
+
         <?php if (!$isLoggedIn): ?>
-          <a href="/spletniimenikzdravnikov/prijava" class="btn-nav">Prijava</a>
+        <a href="/spletniimenikzdravnikov/prijava" class="btn-nav">Prijava</a>
         <?php else: ?>
-          <div class="user-menu">
-            <button class="user-menu-trigger" type="button">
-              <span class="user-avatar"><?= htmlspecialchars($initials) ?></span>
-              <span class="user-name"><?= htmlspecialchars($userFullName) ?></span>
-              <span class="user-chevron">
-                <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-            </button>
+        <div class="user-menu">
+          <button class="user-menu-trigger" type="button">
+            <span class="user-avatar"><?= htmlspecialchars($initials) ?></span>
+            <span class="user-name"
+              ><?= htmlspecialchars($userFullName) ?></span
+            >
+            <span class="user-chevron">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M6 9l6 6 6-6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </button>
 
-            <div class="user-dropdown">
-              <?php if ($isDoctor): ?>
-                <a href="profil_zdravnik.php" class="user-dropdown-item">Moj profil</a>
-              <?php endif; ?>
+          <div class="user-dropdown">
+            <?php if ($isDoctor): ?>
+            <a href="profil_zdravnik.php" class="user-dropdown-item"
+              >Moj profil</a
+            >
+            <?php endif; ?>
 
-              <?php if (($_SESSION['user_vloga'] ?? '') === 'ADMIN'): ?>
-                <a href="admin_panel.php" class="user-dropdown-item">Admin plošča</a>
-              <?php endif; ?>
+            <?php if (($_SESSION['user_vloga'] ?? '') === 'ADMIN'): ?>
+            <a href="admin_panel.php" class="user-dropdown-item"
+              >Admin plošča</a
+            >
+            <?php endif; ?>
 
-              <a href="logout.php" class="user-dropdown-item">Odjava</a>
-            </div>
+            <a href="logout.php" class="user-dropdown-item">Odjava</a>
           </div>
+        </div>
         <?php endif; ?>
       </div>
     </header>
 
-<main>
-  <section class="spec-hero">
-    <div class="spec-hero-inner">
-      <div class="spec-kicker">NAŠI ZDRAVNIKI</div>
-      <h1>Poišči zdravnika <span>brez zapletov</span></h1>
-    </div>
-  </section>
+    <main>
+      <section class="spec-hero">
+        <div class="spec-hero-inner">
+          <div class="spec-kicker">NAŠI ZDRAVNIKI</div>
+          <h1>Poišči zdravnika <span>brez zapletov</span></h1>
+        </div>
+      </section>
 
-  <span class="separator"></span>
+      <span class="separator"></span>
 
-  <section class="search-modes">
-    <button class="mode-btn" data-mode="spec">Iskanje po specializaciji</button>
-    <button class="mode-btn" data-mode="ime">Iskanje po imenu</button>
-    <button class="mode-btn" data-mode="lokacija">Iskanje po lokaciji</button>
-  </section>
+      <section class="search-modes">
+        <button class="mode-btn" data-mode="spec">
+          Iskanje po specializaciji
+        </button>
+        <button class="mode-btn" data-mode="ime">Iskanje po imenu</button>
+        <button class="mode-btn" data-mode="lokacija">
+          Iskanje po lokaciji
+        </button>
+      </section>
 
-  <span class="search-separator"></span>
+      <span class="search-separator"></span>
 
-  <section class="doctor-tools">
+      <section class="doctor-tools">
+        <div id="toolSpec" class="tool-panel skrito">
+          <div class="doctor-filters">
+            <button class="filter-btn active" data-filter="all">Vsi</button>
 
-    <div id="toolSpec" class="tool-panel skrito">
-      <div class="doctor-filters">
-        <button class="filter-btn active" data-filter="all">Vsi</button>
+            <?php foreach ($specializacije as $s): ?>
+            <button
+              class="filter-btn"
+              data-filter="<?= htmlspecialchars($s['naziv']) ?>"
+            >
+              <?= htmlspecialchars($s['naziv']) ?>
+            </button>
+            <?php endforeach; ?>
+          </div>
+        </div>
 
-        <?php foreach ($specializacije as $s): ?>
-          <button class="filter-btn" data-filter="<?= htmlspecialchars($s['naziv']) ?>">
-            <?= htmlspecialchars($s['naziv']) ?>
-          </button>
-        <?php endforeach; ?>
-      </div>
-    </div>
+        <div id="toolIme" class="tool-panel skrito">
+          <div class="search">
+            <input
+              type="text"
+              id="doctorSearch"
+              placeholder="Išči zdravnika (ime, priimek, specializacija)..."
+              autocomplete="off"
+            />
+          </div>
+        </div>
 
-    <div id="toolIme" class="tool-panel skrito">
-      <div class="search">
-        <input
-          type="text"
-          id="doctorSearch"
-          placeholder="Išči zdravnika (ime, priimek, specializacija)..."
-          autocomplete="off"
-        />
-      </div>
-    </div>
+        <div id="toolLokacija" class="tool-panel skrito">
+          <div class="location-tools">
+            <button id="btnMyLocation" type="button" class="btn-nav">
+              Uporabi mojo lokacijo
+            </button>
 
-    <div id="toolLokacija" class="tool-panel skrito">
-      <div class="location-placeholder">
-        Iskanje po lokaciji bo dodano kasneje.
-      </div>
-    </div>
+            <label class="radius-wrap">
+              Radij (km):
+              <input id="radiusKm" type="number" min="1" max="100" value="10" />
+            </label>
 
-  </section>
+            <div id="geoStatus" class="geo-status"></div>
+          </div>
 
-  <section class="home-doctors">
-    <div class="container">
-      <div class="home-doctors-grid">
+          <div id="map" class="geo-map"></div>
+        </div>
+      </section>
 
-        <?php if (!$zdravniki): ?>
-          <p>Trenutno ni zdravnikov v bazi.</p>
-        <?php endif; ?>
+      <section class="home-doctors">
+        <div class="container">
+          <div class="home-doctors-grid">
+            <?php if (!$zdravniki): ?>
+            <p>Trenutno ni zdravnikov v bazi.</p>
+            <?php endif; ?>
 
-        <?php foreach ($zdravniki as $d): ?>
-          <article
-            class="doctor-card"
-            data-specializacija="<?= htmlspecialchars($d['specializacije']) ?>"
-          >
-
-            <?php if ($d['povprecje_ocen'] !== null): ?>
+            <?php foreach ($zdravniki as $d): ?>
+            <article
+              class="doctor-card"
+              data-specializacija="<?= htmlspecialchars($d['specializacije']) ?>"
+              data-lat="<?= htmlspecialchars((string)($d['latitude'] ?? '')) ?>"
+              data-lng="<?= htmlspecialchars((string)($d['longitude'] ?? '')) ?>"
+            >
+              <?php if ($d['povprecje_ocen'] !== null): ?>
               <div
                 class="rating-badge"
                 title="<?= htmlspecialchars(
@@ -204,37 +278,38 @@ if (!function_exists('doctorImage')) {
                   <?= number_format((float)$d['povprecje_ocen'], 1, ',', '') ?>
                 </span>
               </div>
-            <?php endif; ?>
+              <?php endif; ?>
 
-            <div class="doctor-photo">
-              <img
-                src="<?= htmlspecialchars(doctorImage($d['slika_url'] ?? null, (int)$d['id_zdravnik'])) ?>"
-                alt="<?= htmlspecialchars($d['ime'].' '.$d['priimek']) ?>"
-                loading="lazy"
-              />
-            </div>
+              <div class="doctor-photo">
+                <img
+                  src="<?= htmlspecialchars(doctorImage($d['slika_url'] ?? null, (int)$d['id_zdravnik'])) ?>"
+                  alt="<?= htmlspecialchars($d['ime'].' '.$d['priimek']) ?>"
+                  loading="lazy"
+                />
+              </div>
 
-            <div class="doctor-info">
-              <h3 class="doctor-name">
-                <?= htmlspecialchars($d['ime'].' '.$d['priimek']) ?>
-              </h3>
+              <div class="doctor-info">
+                <h3 class="doctor-name">
+                  <?= htmlspecialchars($d['ime'].' '.$d['priimek']) ?>
+                </h3>
 
-              <p class="doctor-specialization">
-                <?= $d['specializacije'] ? htmlspecialchars($d['specializacije']) : '—' ?>
-              </p>
+                <p class="doctor-specialization">
+                  <?= $d['specializacije'] ? htmlspecialchars($d['specializacije']) : '—' ?>
+                </p>
 
-              <a href="profil_zdravnik.php?id=<?= (int)$d['id_uporabnik'] ?>" class="read-more-btn">
-                Preberi več
-              </a>
-            </div>
-
-          </article>
-        <?php endforeach; ?>
-
-      </div>
-    </div>
-  </section>
-</main>
+                <a
+                  href="profil_zdravnik.php?id=<?= (int)$d['id_uporabnik'] ?>"
+                  class="read-more-btn"
+                >
+                  Preberi več
+                </a>
+              </div>
+            </article>
+            <?php endforeach; ?>
+          </div>
+        </div>
+      </section>
+    </main>
 
     <footer>
       <div class="container">
@@ -250,119 +325,252 @@ if (!function_exists('doctorImage')) {
     </footer>
   </body>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    // obnovi
-    const savedScroll = sessionStorage.getItem("indexScrollY");
-    if (savedScroll !== null) {
-      window.scrollTo(0, parseInt(savedScroll, 10));
-      sessionStorage.removeItem("indexScrollY");
-    }
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // obnovi
+      const savedScroll = sessionStorage.getItem("indexScrollY");
+      if (savedScroll !== null) {
+        window.scrollTo(0, parseInt(savedScroll, 10));
+        sessionStorage.removeItem("indexScrollY");
+      }
 
-    // shrani ob kliku na "Preberi več"
-    document.querySelectorAll(".read-more-btn").forEach((link) => {
-      link.addEventListener("click", () => {
-        sessionStorage.setItem("indexScrollY", String(window.scrollY));
+      // shrani ob kliku na "Preberi več"
+      document.querySelectorAll(".read-more-btn").forEach((link) => {
+        link.addEventListener("click", () => {
+          sessionStorage.setItem("indexScrollY", String(window.scrollY));
+        });
       });
-    });
 
-    // za preklop
-    const gumbiNacina = document.querySelectorAll(".mode-btn");
-    const panelSpec = document.getElementById("toolSpec");
-    const panelIme = document.getElementById("toolIme");
-    const panelLok = document.getElementById("toolLokacija");
+      // za preklop
+      const gumbiNacina = document.querySelectorAll(".mode-btn");
+      const panelSpec = document.getElementById("toolSpec");
+      const panelIme = document.getElementById("toolIme");
+      const panelLok = document.getElementById("toolLokacija");
 
-    // za filtriranje
-    const gumbiFilter = document.querySelectorAll(".filter-btn");
-    const kartice = document.querySelectorAll(".doctor-card");
-    const vnosIskanja = document.getElementById("doctorSearch");
+      // za filtriranje
+      const gumbiFilter = document.querySelectorAll(".filter-btn");
+      const kartice = document.querySelectorAll(".doctor-card");
+      const vnosIskanja = document.getElementById("doctorSearch");
 
-    let aktivniFilter = "all";
-    let iskalniNiz = "";
+      let aktivniFilter = "all";
+      let iskalniNiz = "";
 
-    function uporabiFiltre() {
-      const q = iskalniNiz.toLowerCase().trim();
+      function uporabiFiltre() {
+        const q = iskalniNiz.toLowerCase().trim();
 
-      kartice.forEach((k) => {
-        const spec = (k.dataset.specializacija || "").toLowerCase();
-        const ime = (k.querySelector(".doctor-name")?.textContent || "").toLowerCase();
+        kartice.forEach((k) => {
+          const spec = (k.dataset.specializacija || "").toLowerCase();
+          const ime = (
+            k.querySelector(".doctor-name")?.textContent || ""
+          ).toLowerCase();
 
-        const ujemaSpec = (aktivniFilter === "all") || spec.includes(aktivniFilter.toLowerCase());
-        const ujemaIskanje = (q === "") || ime.includes(q) || spec.includes(q);
+          const ujemaSpec =
+            aktivniFilter === "all" ||
+            spec.includes(aktivniFilter.toLowerCase());
+          const ujemaIskanje = q === "" || ime.includes(q) || spec.includes(q);
 
-        k.style.display = (ujemaSpec && ujemaIskanje) ? "block" : "none";
+          k.style.display = ujemaSpec && ujemaIskanje ? "block" : "none";
+        });
+      }
+
+      // skrije vse panele in pokaže samo izbranega
+      function nastaviNacin(nacin) {
+        panelSpec.classList.add("skrito");
+        panelIme.classList.add("skrito");
+        panelLok.classList.add("skrito");
+
+        if (nacin === "spec") panelSpec.classList.remove("skrito");
+        if (nacin === "ime") panelIme.classList.remove("skrito");
+        if (nacin === "lokacija") panelLok.classList.remove("skrito");
+      }
+
+      // klik na gumbe načina
+      gumbiNacina.forEach((gumb) => {
+        gumb.addEventListener("click", () => {
+          gumbiNacina.forEach((g) => g.classList.remove("active"));
+          gumb.classList.add("active");
+
+          const nacin = gumb.dataset.mode;
+          nastaviNacin(nacin);
+
+          if (nacin === "spec") {
+            // počisti iskanje
+            if (vnosIskanja) vnosIskanja.value = "";
+            iskalniNiz = "";
+            uporabiFiltre();
+          }
+
+          if (nacin === "ime") {
+            // reset filter na "Vsi"
+            aktivniFilter = "all";
+            gumbiFilter.forEach((b) => b.classList.remove("active"));
+            document
+              .querySelector('.filter-btn[data-filter="all"]')
+              ?.classList.add("active");
+            uporabiFiltre();
+
+            // fokus na search
+            vnosIskanja?.focus();
+          }
+
+          // lokacija
+          const btnMyLocation = document.getElementById("btnMyLocation");
+          const geoStatus = document.getElementById("geoStatus");
+          const radiusKm = document.getElementById("radiusKm");
+
+          let map = null;
+          let userMarker = null;
+          let doctorMarkers = [];
+
+          function clearDoctorMarkers() {
+            doctorMarkers.forEach((m) => m.remove());
+            doctorMarkers = [];
+          }
+
+          function ensureMap(lat, lng) {
+            if (!map) {
+              map = L.map("map").setView([lat, lng], 12);
+              L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+                  maxZoom: 19,
+                  attribution: "&copy; OpenStreetMap",
+                }
+              ).addTo(map);
+            } else {
+              map.setView([lat, lng], 12);
+            }
+          }
+
+          function applyLocationFilter(userLat, userLng) {
+            const rad = Number(radiusKm?.value || 10);
+
+            clearDoctorMarkers();
+
+            // uporabnik
+            if (userMarker) userMarker.remove();
+            userMarker = L.circleMarker([userLat, userLng], { radius: 8 })
+              .addTo(map)
+              .bindPopup("Tvoja lokacija")
+              .openPopup();
+
+            let shown = 0;
+
+            kartice.forEach((k) => {
+              const p = getDoctorLatLng(k);
+              if (!p) {
+                k.style.display = "none";
+                return;
+              }
+              const d = distanceKm(userLat, userLng, p.lat, p.lng);
+
+              if (d <= rad) {
+                k.style.display = "block";
+                shown++;
+
+                // zdravnik
+                const name = (
+                  k.querySelector(".doctor-name")?.textContent || "Zdravnik"
+                ).trim();
+                const m = L.marker([p.lat, p.lng])
+                  .addTo(map)
+                  .bindPopup(`<b>${name}</b><br>${d.toFixed(2)} km`);
+                doctorMarkers.push(m);
+              } else {
+                k.style.display = "none";
+              }
+            });
+
+            geoStatus.textContent = `Prikazani zdravniki: ${shown} (v radiju ${rad} km)`;
+          }
+
+          btnMyLocation?.addEventListener("click", () => {
+            if (!navigator.geolocation) {
+              geoStatus.textContent =
+                "Geolokacija ni podprta v tem brskalniku.";
+              return;
+            }
+
+            geoStatus.textContent = "Pridobivam lokacijo…";
+
+            navigator.geolocation.getCurrentPosition(
+              (pos) => {
+                const userLat = pos.coords.latitude;
+                const userLng = pos.coords.longitude;
+
+                ensureMap(userLat, userLng);
+                applyLocationFilter(userLat, userLng);
+              },
+              () => {
+                geoStatus.textContent =
+                  "Dovoljenje zavrnjeno ali lokacije ni mogoče pridobiti.";
+              },
+              {
+                enableHighAccuracy: true,
+                timeout: 10000,
+              }
+            );
+          });
+
+          radiusKm?.addEventListener("change", () => {
+            // če je uporabnik že dobil lokacijo, ponovi filtriranje
+            if (userMarker) {
+              const ll = userMarker.getLatLng();
+              applyLocationFilter(ll.lat, ll.lng);
+            }
+          });
+        });
       });
-    }
 
-    // skrije vse panele in pokaže samo izbranega
-    function nastaviNacin(nacin) {
+      // vse skrito
       panelSpec.classList.add("skrito");
       panelIme.classList.add("skrito");
       panelLok.classList.add("skrito");
 
-      if (nacin === "spec") panelSpec.classList.remove("skrito");
-      if (nacin === "ime") panelIme.classList.remove("skrito");
-      if (nacin === "lokacija") panelLok.classList.remove("skrito");
-    }
+      gumbiNacina.forEach((g) => g.classList.remove("active"));
 
-    // klik na gumbe načina
-    gumbiNacina.forEach((gumb) => {
-      gumb.addEventListener("click", () => {
-        gumbiNacina.forEach((g) => g.classList.remove("active"));
-        gumb.classList.add("active");
+      // klik na filter gumbe
+      gumbiFilter.forEach((g) => {
+        g.addEventListener("click", () => {
+          gumbiFilter.forEach((x) => x.classList.remove("active"));
+          g.classList.add("active");
 
-        const nacin = gumb.dataset.mode;
-        nastaviNacin(nacin);
-
-        if (nacin === "spec") {
-          // počisti iskanje
-          if (vnosIskanja) vnosIskanja.value = "";
-          iskalniNiz = "";
+          aktivniFilter = g.dataset.filter || "all";
           uporabiFiltre();
-        }
-
-        if (nacin === "ime") {
-          // reset filter na "Vsi"
-          aktivniFilter = "all";
-          gumbiFilter.forEach((b) => b.classList.remove("active"));
-          document.querySelector('.filter-btn[data-filter="all"]')?.classList.add("active");
-          uporabiFiltre();
-
-          // fokus na search
-          vnosIskanja?.focus();
-        }
-
-        // lokacija
+        });
       });
+
+      // vnos v search
+      if (vnosIskanja) {
+        vnosIskanja.addEventListener("input", (e) => {
+          iskalniNiz = e.target.value || "";
+          uporabiFiltre();
+        });
+      }
     });
 
-    // vse skrito
-    panelSpec.classList.add("skrito");
-    panelIme.classList.add("skrito");
-    panelLok.classList.add("skrito");
-
-    gumbiNacina.forEach(g => g.classList.remove("active"));
-
-    // klik na filter gumbe
-    gumbiFilter.forEach((g) => {
-      g.addEventListener("click", () => {
-        gumbiFilter.forEach((x) => x.classList.remove("active"));
-        g.classList.add("active");
-
-        aktivniFilter = g.dataset.filter || "all";
-        uporabiFiltre();
-      });
-    });
-
-    // vnos v search
-    if (vnosIskanja) {
-      vnosIskanja.addEventListener("input", (e) => {
-        iskalniNiz = e.target.value || "";
-        uporabiFiltre();
-      });
+    // --------------------------------------------
+    function distanceKm(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = ((lat2 - lat1) * Math.PI) / 180;
+      const dLon = ((lon2 - lon1) * Math.PI) / 180;
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos((lat1 * Math.PI) / 180) *
+          Math.cos((lat2 * Math.PI) / 180) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
     }
-  });
-</script>
 
-
+    function getDoctorLatLng(card) {
+      const lat = parseFloat(card.dataset.lat || "");
+      const lng = parseFloat(card.dataset.lng || "");
+      if (Number.isFinite(lat) && Number.isFinite(lng)) return { lat, lng };
+      return null;
+    }
+  </script>
 </html>
+
