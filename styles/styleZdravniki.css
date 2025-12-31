@@ -94,29 +94,208 @@
   margin: 18px auto 22px;
 }
 
-.location-tools{
-  display:flex;
-  gap:12px;
-  align-items:center;
-  flex-wrap:wrap;
+.loc-wizard{
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 18px;
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, .08);
+  border: 1px solid rgba(15, 23, 42, .06);
+  overflow: hidden;
 }
 
-.radius-wrap input{
-  width:80px;
-  padding:6px 10px;
-  border-radius:10px;
-  border:1px solid rgba(15,23,42,.15);
+.loc-wizard-left{
+  padding: 22px;
+  background: linear-gradient(180deg, rgba(241, 245, 249, .9), rgba(248, 250, 252, 1));
+  border-right: 1px solid rgba(15, 23, 42, .06);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.geo-status{
-  font-size:13px;
-  color:#64748b;
+.loc-steps{
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
-.geo-map{
-  margin-top:12px;
-  height:340px;
-  border-radius:16px;
-  overflow:hidden;
-  border:1px solid rgba(15,23,42,.08);
+.loc-step{
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, .12);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 12px;
+  color: rgba(15, 23, 42, .65);
+  background: #fff;
 }
+
+.loc-step.active{
+  border-color: rgba(20, 184, 166, .7);
+  color: rgba(20, 184, 166, 1);
+  box-shadow: 0 8px 16px rgba(20, 184, 166, .18);
+}
+
+.loc-illustration{
+  height: 130px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px dashed rgba(20, 184, 166, .35);
+  display: grid;
+  place-items: center;
+}
+
+.loc-pin{
+  font-size: 42px;
+  line-height: 1;
+}
+
+.loc-title{
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.loc-desc{
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.loc-left-actions{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.loc-btn-primary{
+  border: 0;
+  cursor: pointer;
+  padding: 10px 14px;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 800;
+  font-size: 13px;
+  background: linear-gradient(135deg, var(--teal1), var(--teal2));
+  box-shadow: 0 10px 20px rgba(20, 184, 166, .22);
+}
+
+.loc-btn-ghost{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, .12);
+  background: rgba(255,255,255,.65);
+  color: rgba(15, 23, 42, .75);
+  font-weight: 800;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.loc-help{
+  margin-top: auto;
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.35;
+}
+
+.loc-wizard-right{
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.loc-right-top{
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.loc-field{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.loc-label{
+  font-size: 12px;
+  font-weight: 800;
+  color: #64748b;
+}
+
+.loc-input{
+  width: 120px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, .12);
+  outline: none;
+  background: #fff;
+}
+
+.loc-status-wrap{
+  flex: 1;
+  min-width: 220px;
+}
+
+.loc-status{
+  font-size: 13px;
+  color: #64748b;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, .08);
+  background: rgba(248, 250, 252, .9);
+}
+
+.loc-map{
+  height: 360px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(15, 23, 42, .08);
+}
+
+.loc-right-bottom{
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+.loc-btn-secondary{
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, .12);
+  background: #fff;
+  color: rgba(15, 23, 42, .75);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.loc-btn-next{
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 0;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, .18);
+}
+
+.leaflet-container,
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom{
+  z-index: 1 !important;
+}
+

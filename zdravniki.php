@@ -234,20 +234,39 @@ if (!function_exists('doctorImage')) {
         </div>
 
         <div id="toolLokacija" class="tool-panel skrito">
-          <div class="location-tools">
-            <button id="btnMyLocation" type="button" class="btn-nav">
-              Uporabi mojo lokacijo
-            </button>
+          <div class="loc-wizard">
 
-            <label class="radius-wrap">
-              Radij (km):
-              <input id="radiusKm" type="number" min="1" max="100" value="10" />
-            </label>
+            <aside class="loc-wizard-left">
+              <h3 class="loc-title">Nastavi lokacijo</h3>
+              <p class="loc-desc">
+                Dovoli dostop do lokacije, da ti pokažemo zdravnike v tvoji bližini.
+              </p>
 
-            <div id="geoStatus" class="geo-status"></div>
+              <div class="loc-left-actions">
+                <button id="btnMyLocation" type="button" class="loc-btn-primary">
+                  Uporabi mojo lokacijo
+                </button>
+              </div>
+
+              <div class="loc-help">
+                Če lokacije ne dovoliš, lahko še vedno iščeš po imenu ali specializaciji.
+              </div>
+            </aside>
+
+            <section class="loc-wizard-right">
+              <div class="loc-right-top">
+                <div class="loc-field">
+                  <label for="radiusKm" class="loc-label">Radij (km)</label>
+                  <input id="radiusKm" type="number" min="1" max="100" value="10" class="loc-input" />
+                </div>
+
+                <div class="loc-status-wrap">
+                  <div id="geoStatus" class="loc-status">Izberi “Uporabi mojo lokacijo”.</div>
+                </div>
+              </div>
+              <div id="map" class="loc-map" aria-label="Zemljevid"></div>
+            </section>
           </div>
-
-          <div id="map" class="geo-map"></div>
         </div>
       </section>
 
