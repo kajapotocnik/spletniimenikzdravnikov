@@ -3,7 +3,7 @@ require __DIR__ . '/povezava.php';
 
 // samo POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: prijava.php');
+    header('Location: prijava');
     exit;
 }
 
@@ -51,5 +51,5 @@ $_SESSION['user_priimek'] = $user['priimek'];
 $_SESSION['user_email'] = $user['email'];
 $_SESSION['user_vloga'] = $user['vloga'];
 
-header('Location: index.php');
+header('Location: index');
 exit;

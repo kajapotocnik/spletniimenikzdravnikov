@@ -1,9 +1,8 @@
 <?php
 require __DIR__ . '/povezava.php';
-require_once __DIR__ . '/mailer.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: prijava.php');
+    header('Location: prijava');
     exit;
 }
 
@@ -63,5 +62,5 @@ $_SESSION['user_priimek'] = $priimek;
 $_SESSION['user_email']   = $email;
 $_SESSION['user_vloga']   = $vloga;
 
-header('Location: index.php');
+header('Location: index');
 exit;

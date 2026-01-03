@@ -42,6 +42,12 @@ $router->get('/prijava', function () {
   exit;
 });
 
+// Admin
+$router->get('/admin', function () {
+  require __DIR__ . '/admin_panel.php';
+  exit;
+});
+
 // Če NI nobenega ruta, gre na index.php
 $router->run();
 
@@ -183,7 +189,7 @@ if ($userIme !== '' || $userPriimek !== '') {
               <?php endif; ?>
 
               <?php if (($_SESSION['user_vloga'] ?? '') === 'ADMIN'): ?>
-                <a href="admin_panel.php" class="user-dropdown-item">Admin plošča</a>
+                <a href="/spletniimenikzdravnikov/admin" class="user-dropdown-item">Admin plošča</a>
               <?php endif; ?>
 
               <a href="logout.php" class="user-dropdown-item">Odjava</a>
