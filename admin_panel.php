@@ -18,8 +18,9 @@ if ($uRes) $users = $uRes->fetch_all(MYSQLI_ASSOC);
 // zdravniki
 $doctors = [];
 $dSql = "
-  SELECT d.id_zdravnik, d.TK_uporabnik, u.ime, u.priimek, u.email, u.vloga,
-         d.naziv, d.telefon, d.klinika, d.mesto
+  SELECT 
+  d.id_zdravnik, d.TK_uporabnik, u.ime, u.priimek, u.email, u.vloga,
+  d.naziv, d.telefon, d.klinika, d.mesto
   FROM zdravnik d
   JOIN uporabnik u ON u.id_uporabnik = d.TK_uporabnik
   ORDER BY d.id_zdravnik DESC
@@ -30,10 +31,11 @@ if ($dRes) $doctors = $dRes->fetch_all(MYSQLI_ASSOC);
 // ocene
 $ratings = [];
 $rSql = "
-  SELECT o.id_ocene, o.ocena, o.komentar, 
-         u1.ime AS u_ime, u1.priimek AS u_priimek,
-         u2.ime AS d_ime, u2.priimek AS d_priimek,
-         d.id_zdravnik
+  SELECT 
+  o.id_ocene, o.ocena, o.komentar, 
+  u1.ime AS u_ime, u1.priimek AS u_priimek,
+  u2.ime AS d_ime, u2.priimek AS d_priimek,
+  d.id_zdravnik
   FROM ocene o
   JOIN uporabnik u1 ON u1.id_uporabnik = o.TK_uporabnik
   JOIN zdravnik d ON d.id_zdravnik = o.TK_zdravnik

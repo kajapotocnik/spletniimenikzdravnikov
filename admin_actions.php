@@ -1,19 +1,22 @@
 <?php
 require __DIR__ . '/povezava.php';
 
-// samo ADMIN
+// samo ADMIN dostop
 if (!isset($_SESSION['user_id']) || (($_SESSION['user_vloga'] ?? '') !== 'ADMIN')) {
   header('Location: prijava.php');
   exit;
 }
 
+// samo POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   header('Location: admin_panel.php');
   exit;
 }
 
+// kero akcijo admin hoče
 $action = $_POST['action'] ?? '';
 
+// nazaj zavihek
 function back($tab = 'users') {
   header('Location: admin_panel.php?tab=' . urlencode($tab));
   exit;
@@ -31,16 +34,18 @@ try {
     $geslo = $_POST['geslo'] ?? '';
     $vloga = $_POST['vloga'] ?? 'UPORABNIK';
 
+    // samo dve vlogi dovoljeni
     if (!in_array($vloga, ['UPORABNIK','ZDRAVNIK'], true)) $vloga = 'UPORABNIK';
 
-    // preveri email
+    // preveri email obstaja
     $chk = $conn->prepare("SELECT 1 FROM uporabnik WHERE email=? LIMIT 1");
     $chk->bind_param('s', $email);
     $chk->execute();
     $chk->store_result();
-    if ($chk->num_rows > 0) { $chk->close(); back('users'); }
+    if ($chk->num_rows > 0) { $chk->close(); back('users'); } // obstaja
     $chk->close();
 
+    // novi uporabnik
     $ins = $conn->prepare("INSERT INTO uporabnik (email, geslo, ime, priimek, vloga) VALUES (?,?,?,?,?)");
     $ins->bind_param('sssss', $email, $geslo, $ime, $priimek, $vloga);
     $ins->execute();
@@ -102,17 +107,18 @@ try {
   if ($action === 'promote_to_doctor') {
     $id = (int)($_POST['id_uporabnik'] ?? 0);
 
-    $up = $conn->prepare("UPDATE uporabnik SET vloga='ZDRAVNIK' WHERE id_uporabnik=? AND vloga<>'ADMIN'");
+    $up = $conn->prepare("UPDATE uporabnik SET vloga='ZDRAVNIK' WHERE id_uporabnik=? AND vloga<>'ADMIN'"); // sprememba vloge razen ADMIN
     $up->bind_param('i', $id);
     $up->execute();
     $up->close();
 
-    $chk = $conn->prepare("SELECT id_zdravnik FROM zdravnik WHERE TK_uporabnik=? LIMIT 1");
+    $chk = $conn->prepare("SELECT id_zdravnik FROM zdravnik WHERE TK_uporabnik=? LIMIT 1"); // preveri zapis v tabeli
     $chk->bind_param('i', $id);
     $chk->execute();
     $row = $chk->get_result()->fetch_assoc();
     $chk->close();
 
+    // če ne obstaja se doda
     if (!$row) {
       $ins = $conn->prepare("INSERT INTO zdravnik (TK_uporabnik) VALUES (?)");
       $ins->bind_param('i', $id);
@@ -239,7 +245,7 @@ try {
     back('doctors');
   }
 
-  // 7) izbriši oceno
+  // izbriši oceno
   if ($action === 'delete_rating') {
     $id = (int)($_POST['id_ocene'] ?? 0);
     $del = $conn->prepare("DELETE FROM ocene WHERE id_ocene=?");

@@ -21,31 +21,30 @@ if ($userIme !== '' || $userPriimek !== '') {
 // prebere zdravnike
 $sql = "
 SELECT
-  d.id_zdravnik,
-  u.id_uporabnik,
-  u.ime,
-  u.priimek,
-  GROUP_CONCAT(DISTINCT s.naziv ORDER BY s.naziv SEPARATOR ', ') AS specializacije,
-  ROUND(AVG(o.ocena), 1)  AS povprecje_ocen,
-  COUNT(o.ocena) AS st_ocen,
-  d.slika_url,
-  d.latitude,
-  d.longitude
+d.id_zdravnik,
+u.id_uporabnik,
+u.ime,
+u.priimek,
+GROUP_CONCAT(DISTINCT s.naziv ORDER BY s.naziv SEPARATOR ', ') AS specializacije,
+ROUND(AVG(o.ocena), 1)  AS povprecje_ocen,
+COUNT(o.ocena) AS st_ocen,
+d.slika_url,
+d.latitude,
+d.longitude
 FROM zdravnik d
 JOIN uporabnik u ON u.id_uporabnik = d.TK_uporabnik
 LEFT JOIN ocene o ON o.TK_zdravnik = d.id_zdravnik
 LEFT JOIN specializacija_zdravnik sz ON sz.TK_zdravnik = d.id_zdravnik
 LEFT JOIN specializacija s ON s.id_specializacija = sz.TK_specializacija
 GROUP BY
-  d.id_zdravnik,
-  u.id_uporabnik,
-  u.ime,
-  u.priimek,
-  d.slika_url,
-  d.latitude,
-  d.longitude
+d.id_zdravnik,
+u.id_uporabnik,
+u.ime,
+u.priimek,
+d.slika_url,
+d.latitude,
+d.longitude
 ORDER BY u.priimek, u.ime
-
 ";
 
 // za specializacije
@@ -577,9 +576,9 @@ if (!function_exists('doctorImage')) {
       const a =
         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.cos((lat1 * Math.PI) / 180) *
-          Math.cos((lat2 * Math.PI) / 180) *
-          Math.sin(dLon / 2) *
-          Math.sin(dLon / 2);
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       return R * c;
     }

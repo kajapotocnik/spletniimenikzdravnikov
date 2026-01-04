@@ -134,7 +134,7 @@ $isDoctor = $isLoggedIn && $userVloga === 'ZDRAVNIK'; // samo zdravniki
 $initials = 'U';
 if ($userIme !== '' || $userPriimek !== '') {
     $first = mb_substr($userIme, 0, 1, 'UTF-8');
-    $last  = mb_substr($userPriimek, 0, 1, 'UTF-8');
+    $last = mb_substr($userPriimek, 0, 1, 'UTF-8');
     $initials = mb_strtoupper($first . $last, 'UTF-8');
 }
 ?>

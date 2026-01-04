@@ -144,8 +144,8 @@ $zdrAvg = [];
 
 $sqlZdr = "
   SELECT z.id_zdravnik,
-         CONCAT(u.ime, ' ', u.priimek) AS zdravnik,
-         ROUND(AVG(o.ocena), 2) AS povprecje
+  CONCAT(u.ime, ' ', u.priimek) AS zdravnik,
+  ROUND(AVG(o.ocena), 2) AS povprecje
   FROM zdravnik z
   JOIN uporabnik u ON u.id_uporabnik = z.TK_uporabnik
   LEFT JOIN ocene o ON o.TK_zdravnik = z.id_zdravnik
@@ -443,10 +443,10 @@ if ($res = $conn->query($sqlZdr)) {
                 <div class="reviews-list">
                   <?php foreach ($zadnjeOcene as $o): ?>
                   <?php
-                            $ime = trim(($o['uporabnik_ime'] ?? '') . ' ' . ($o['uporabnik_priimek'] ?? ''));
-                            $doc = trim(($o['zdravnik_ime'] ?? '') . ' ' . ($o['zdravnik_priimek'] ?? ''));
-                            $komentar = trim((string)($o['komentar'] ?? ''));
-                            if ($komentar === '') $komentar = 'Brez komentarja.';
+                    $ime = trim(($o['uporabnik_ime'] ?? '') . ' ' . ($o['uporabnik_priimek'] ?? ''));
+                    $doc = trim(($o['zdravnik_ime'] ?? '') . ' ' . ($o['zdravnik_priimek'] ?? ''));
+                    $komentar = trim((string)($o['komentar'] ?? ''));
+                    if ($komentar === '') $komentar = 'Brez komentarja.';
                         ?>
                   <div class="review-item">
                     <div class="review-top">

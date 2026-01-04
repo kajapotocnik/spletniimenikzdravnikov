@@ -1,7 +1,6 @@
 <?php
 require __DIR__ . '/povezava.php';
 
-
 // brez prijave ni profila
 if (!isset($_SESSION['user_id'])) {
     header('Location: prijava.php');
@@ -30,7 +29,6 @@ if (!function_exists('doctorImage')) {
         return file_exists(__DIR__ . "/$path") ? $path : "img/doctor-placeholder.jpg";
     }
 }
-
 
 // da  ma zdravnik zapis v tabeli zdravnik
 $doctorId = null;
@@ -134,17 +132,17 @@ if (!empty($allSpecs) && !empty($selectedSpecs)) {
 
 
 if ($isEditMode && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $naziv       = trim($_POST['naziv']       ?? '');
-    $telefon     = trim($_POST['telefon']     ?? '');
-    $spletnaStran= trim($_POST['spletnaStran']?? '');
-    $klinika     = trim($_POST['klinika']     ?? '');
-    $bio         = trim($_POST['bio']         ?? '');
-    $ulica       = trim($_POST['ulica']       ?? '');
-    $mesto       = trim($_POST['mesto']       ?? '');
-    $postaSt     = trim($_POST['postaSt']     ?? '');
-    $country     = trim($_POST['country']     ?? '');
-    $latitude    = $_POST['latitude']  !== '' ? (float)$_POST['latitude']  : null;
-    $longitude   = $_POST['longitude'] !== '' ? (float)$_POST['longitude'] : null;
+    $naziv = trim($_POST['naziv'] ?? '');
+    $telefon = trim($_POST['telefon'] ?? '');
+    $spletnaStran = trim($_POST['spletnaStran']?? '');
+    $klinika = trim($_POST['klinika'] ?? '');
+    $bio = trim($_POST['bio'] ?? '');
+    $ulica = trim($_POST['ulica'] ?? '');
+    $mesto = trim($_POST['mesto'] ?? '');
+    $postaSt = trim($_POST['postaSt'] ?? '');
+    $country = trim($_POST['country'] ?? '');
+    $latitude = $_POST['latitude'] !== '' ? (float)$_POST['latitude']  : null;
+    $longitude = $_POST['longitude'] !== '' ? (float)$_POST['longitude'] : null;
 
     $stmt = $conn->prepare("
         UPDATE zdravnik

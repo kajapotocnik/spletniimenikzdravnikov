@@ -20,9 +20,9 @@ if ($userIme !== '' || $userPriimek !== '') {
 
 $sql = "
   SELECT
-    d.klinika,
-    GROUP_CONCAT(DISTINCT d.mesto ORDER BY d.mesto SEPARATOR ', ') AS mesta,
-    COUNT(d.id_zdravnik) AS st_zdravnikov
+  d.klinika,
+  GROUP_CONCAT(DISTINCT d.mesto ORDER BY d.mesto SEPARATOR ', ') AS mesta,
+  COUNT(d.id_zdravnik) AS st_zdravnikov
   FROM zdravnik d
   WHERE d.klinika IS NOT NULL AND d.klinika <> ''
   GROUP BY d.klinika
@@ -257,7 +257,7 @@ $opisiUstanov = [
             $imeUstanove = $u['klinika'];
 
             $opis = $opisiUstanov[$imeUstanove]
-                ?? 'Združujemo strokovno medicinsko znanje, sodobno tehnologijo ter celostni pristop, osredotočen na pacienta.';
+            ?? 'Združujemo strokovno medicinsko znanje, sodobno tehnologijo ter celostni pristop, osredotočen na pacienta.';
             ?>
             <p class="ustanova-desc"><?= htmlspecialchars($opis) ?></p>
 
