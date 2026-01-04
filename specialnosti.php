@@ -93,15 +93,6 @@ if ($rezultat) {
     $specialnosti[] = $vrstica;
   }
 }
-
-$poizvedbaGraf = "
-  SELECT s.id_specializacija, s.naziv, COUNT(DISTINCT sz.TK_zdravnik) AS st
-  FROM specializacija s
-  LEFT JOIN specializacija_zdravnik sz
-    ON sz.TK_specializacija = s.id_specializacija
-  GROUP BY s.id_specializacija, s.naziv
-  ORDER BY s.naziv
-";
 ?>
 
 <!DOCTYPE html>
