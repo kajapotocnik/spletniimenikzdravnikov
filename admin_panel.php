@@ -623,20 +623,7 @@ if (trim($initials) === '') $initials = 'A';
           if (userModal) userModal.hidden = true;
           if (doctorModal) doctorModal.hidden = true;
         }
-
-        // klik na ozadje zapre modal
-        if (userModal) {
-          userModal.addEventListener("click", (e) => {
-            if (e.target === userModal) closeUserEdit();
-          });
-        }
-
-        if (doctorModal) {
-          doctorModal.addEventListener("click", (e) => {
-            if (e.target === doctorModal) closeDoctorEdit();
-          });
-        }
-      });
+    });
 
       // ⋮ + click + ESC
       const menus = () =>
@@ -660,13 +647,6 @@ if (trim($initials) === '') $initials = 'A';
         },
         true
       );
-
-      // klik kjerkoli izven -> zapri
-      document.addEventListener("click", (e) => {
-        const inside =
-          e.target.closest && e.target.closest("details[data-menu]");
-        if (!inside) closeAllMenus();
-      });
 
       // ESC -> zapri
       window.addEventListener("keydown", (e) => {

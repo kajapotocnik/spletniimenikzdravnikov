@@ -7,10 +7,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // podatki iz forme
-$ime     = trim($_POST['name']    ?? '');
+$ime = trim($_POST['name'] ?? '');
 $priimek = trim($_POST['surname'] ?? '');
-$email   = trim($_POST['email']   ?? '');
-$geslo   = $_POST['password']     ?? '';
+$email = trim($_POST['email'] ?? '');
+$geslo = $_POST['password'] ?? '';
 
 // validacija
 if ($ime === '' || $priimek === '' || $email === '' || $geslo === '') {
@@ -56,11 +56,11 @@ $userId = (int)$ins->insert_id;
 $ins->close();
 
 // samodejna prijava
-$_SESSION['user_id']      = $userId;
-$_SESSION['user_ime']     = $ime;
+$_SESSION['user_id'] = $userId;
+$_SESSION['user_ime'] = $ime;
 $_SESSION['user_priimek'] = $priimek;
-$_SESSION['user_email']   = $email;
-$_SESSION['user_vloga']   = $vloga;
+$_SESSION['user_email'] = $email;
+$_SESSION['user_vloga'] = $vloga;
 
 header('Location: index');
 exit;

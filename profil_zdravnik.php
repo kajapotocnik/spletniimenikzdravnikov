@@ -248,7 +248,7 @@ if (
     $canRate &&
     $doctorId !== null
 ) {
-    $ocena    = isset($_POST['rate']) ? (int)$_POST['rate'] : 0;
+    $ocena = isset($_POST['rate']) ? (int)$_POST['rate'] : 0;
     $komentar = trim($_POST['komentar'] ?? '');
 
     if ($ocena < 1 || $ocena > 5) {

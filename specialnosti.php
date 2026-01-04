@@ -234,7 +234,7 @@ if ($rezultat) {
 
               <a
                 class="read-more-btn"
-                href="zdravniki.php?specializacija=<?= urlencode($specialnost['naziv']) ?>"
+                href="/spletniimenikzdravnikov/zdravniki"
               >
                 Poglej zdravnike
               </a>
