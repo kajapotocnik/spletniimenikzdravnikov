@@ -1,8 +1,6 @@
 <?php
 require __DIR__ . '/povezava.php';
 
-$success = isset($_GET['sent']) && $_GET['sent'] === '1';
-
 // PRIJAVA - podatki
 $isLoggedIn = isset($_SESSION['user_id']);
 $userIme = $_SESSION['user_ime'] ?? '';
